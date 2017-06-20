@@ -29,16 +29,12 @@ and open the template in the editor.
                  */
 
                 $txt_file    = file_get_contents('C:\Users\senma\Desktop\File Telecom\Rubrica-31-05-17.csv');
-                $linee        = explode("\n", $txt_file);
-
-
+                $linee        = explode("\n", $txt_file);       //array di linee
                 foreach($linee as $n_linea => $data){
-                    //assorbo i dati
-                    $row_data = explode(';', $data);
-
-                    $info[$n_linea]['num_SIM']  = $row_data[0];
-                    $info[$n_linea]['nome']     = $row_data[1];
-                    $info[$n_linea]['servizio'] = $row_data[2];
+                    $row_data = explode(';', $data);            //array con gli elementi di ogni riga della rubrica
+                    $info[$n_linea]['num_SIM']  = $row_data[0]; //array bidimensionale 
+                    $info[$n_linea]['nome']     = $row_data[1]; // [0]-[num_SIM][nome][servizio]
+                    $info[$n_linea]['servizio'] = $row_data[2]; // [1]-[num_SIM][nome][servizio]
 
                     //visualizzo i dati
                     //echo 'Row ' . $n_linea . ' Numero SIM: '. $info[$n_linea]['num_SIM'] . '<br />';
@@ -59,26 +55,32 @@ and open the template in the editor.
 
             
             
-            /* 
+
+            function scansionatore_abb($rubrica, $id = 04){
+             /* 
              * Argomenti:
              * 1 - array "rubrica"
              * 2 - codice identificativo della riga in cui compare il numero di cellulare
              *     che identifica l'inizio del tabulato
              * 
              */
-            function scansionatore_abb($rubrica, $id = 04){
                 
-                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
-                $linee  = explode("\n", $telecom_file);                       
-                foreach($linee as $n_linea => $riga){                                         
-                    $elem_riga = preg_split("/[\s,]+/", "$riga");
-                    if ($elem_riga[0] == $id){
-                        //echo $elem_riga[0] . " " . $elem_riga[1] . "";
-                        for ($x = 0; $x < count($rubrica); $x++) {
-                            if ($elem_riga[1] == $rubrica[$x]['num_SIM']){
-                                echo "beccato" . "&nbsp" . $n_linea . "<br />" ;
+                $telecom_file = file_get_contents('' 
+                . 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
+                $linee  = explode("\n", $telecom_file);             //array delle righe                       
+                foreach($linee as $n_linea => $riga){               //scansione riga x riga                                         
+                    $elem_riga = preg_split("/[\s,]+/", "$riga");   //array degli elementi di ogni riga
+                    if ($elem_riga[0] == $id){                      //identifico la linea d'inizio report
+                        for ($x = 0; $x < count($rubrica); $x++) {          //confronto il numero con tutta la rubrica
+                            if ($elem_riga[1] == $rubrica[$x]['num_SIM']){  //il numero SIM è nella rubrica
+                                echo "Alla linea " . $n_linea . " ho riconosciuto il numero " 
+                                . $rubrica[$x]['num_SIM'] . "<br />" ;                           
+                                break;
                             }
                         } 
+                        
+                        
+                        
                     }
                     
                     
