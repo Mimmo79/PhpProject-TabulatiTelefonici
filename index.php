@@ -56,50 +56,70 @@ and open the template in the editor.
             
             
 
-            function scansionatore_abb($rubrica, $id = 04){
+            function scansionatore_abb($rubrica, $id_start = 04, $id_stop = 37){
              /* 
              * Argomenti:
              * 1 - array "rubrica"
              * 2 - codice identificativo della riga in cui compare il numero di cellulare
              *     che identifica l'inizio del tabulato
+             * 3 - codice che identifica la fine del tabulato
              * 
              */
+                $index=0;
                 
-                $telecom_file = file_get_contents('' 
-                . 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
-                $linee  = explode("\n", $telecom_file);             //array delle righe                       
-                foreach($linee as $n_linea => $riga){               //scansione riga x riga                                         
-                    $elem_riga = preg_split("/[\s,]+/", "$riga");   //array degli elementi di ogni riga
-                    if ($elem_riga[0] == $id){                      //identifico la linea d'inizio report
-                        for ($x = 0; $x < count($rubrica); $x++) {          //confronto il numero con tutta la rubrica
-                            if ($elem_riga[1] == $rubrica[$x]['num_SIM']){  //il numero SIM è nella rubrica
-                                echo "Alla linea " . $n_linea . " ho riconosciuto il numero " 
-                                . $rubrica[$x]['num_SIM'] . "<br />" ;                           
-                                break;
-                            }
-                        } 
-                        
-                        
-                        
+                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
+                $linee  = explode("\n", $telecom_file);             // array delle righe                       
+                foreach($linee as $n_linea => $riga){               // scansione riga x riga            
+                                                                    //  echo $n_linea . " " . $riga. "<br />"; 
+                    $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
+                                                                    //  echo "<br />" . count($elem_riga). "<br />";
+                    for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale co i dati
+                        $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
+                                                                    //  echo " $elem_riga[$x]"."[$x]";
                     }
+                }   
                     
                     
-                    //&nbsp
-                    //echo $row_data[0]. '<br />';
-                    //echo $row_data[1]. '<br />';
-                    //echo $row_data[2]. '<br />';
                     
-                    //$info[$n_linea]['num_SIM']  = $row_data[0];
-                    //$info[$n_linea]['nome']     = $row_data[1];
-                    //$info[$n_linea]['servizio'] = $row_data[2];
-
-                    //visualizzo i dati
-                    //echo 'Row ' . $n_linea . ' Numero SIM: '. $info[$n_linea]['num_SIM'] . '<br />';
-                    //echo 'Row ' . $n_linea . ' Nome: '      . $info[$n_linea]['nome'] . '<br />';
-                    //echo 'Row ' . $n_linea . ' Servizio: '  . $info[$n_linea]['servizio'] . '<br />';       
+                    
+                    if ($elem_riga[0] == $id_start){                // identifico la linea d'inizio report
+                        $start_stop[$index][0]=$elem_riga[1];       // salvo il numero SIM
+                        $start_stop[$index][1]=$n_linea;            // salvo la linea di inizio report
+                                                                    //echo $start_stop[$index][1] ." ".$start_stop[$index][0]. " $index <br />";                                         
+                    } 
+                    else if ($elem_riga[0] == $id_stop){
+                        $start_stop[$index][2]=$n_linea;            // salvo la linea di fine report
+                                                                    //echo $start_stop[$index][1] ." ".$start_stop[$index][2]. " $index <br />";
+                        ++$index; 
+                    }
+                
+                
+                
+//                $start_stop
+//                0 {numero SIM, riga inizio report, riga fine report}
+//                1 {numero SIM, riga inizio report, riga fine report}
+//                ecc.
+                
+                
+                $n_SIM=count($start_stop);
+                
+               
+                for ($x=0; $x<$n_SIM; $x++){                        // per ogni numero
+                    $data[$x][0][0]=$start_stop[$x][0];
+                                                                                //echo "numero SIM ".$data[$x][0][0]. "<br />"; 
+                    for ($y=$start_stop[$x][1]; $y<$start_stop[$x][2]; $y++){   // per ogni linea del report
+                        $data[$x][1][$y-$start_stop[$x][1]]=$linee[$y];
+                                                                                //echo "dati ". $data[$x][1][$y-$start_stop[$x][1]]. "<br />";     
+                    }
+                            
                 }
+                
+                
+                
+                
+                
                    
-                $n_linee = count($linee);
+                
                 
             }
             
