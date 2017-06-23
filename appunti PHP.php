@@ -55,3 +55,13 @@ Array
 )
 
 and orange will be assigned to $fruit.
+
+
+
+
+
+
+
+
+
+
