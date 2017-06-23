@@ -55,15 +55,15 @@ and open the template in the editor.
             
             
 
-            function scansionatore_abb($rubrica, $id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
+            function scansionatore_abb($id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
              /* 
              * Argomenti:
-             * 1 - array "rubrica"
-             * 2 - codice identificativo della riga in cui compare il numero di cellulare
+             * 
+             * 1 - codice identificativo della riga in cui compare il numero di cellulare
              *     che identifica l'inizio del tabulato
-             * 3 - codice che identifica la fine del tabulato
-             * 4 - codice che identifica una linea voce
-             * 5 - codice che identifica una linea dati
+             * 2 - codice che identifica la fine del tabulato
+             * 3 - codice che identifica una linea voce
+             * 4 - codice che identifica una linea dati
              * 
              */
                                 
@@ -118,7 +118,7 @@ and open the template in the editor.
   
             }
             
-            scansionatore_abb($rubrica);
+            scansionatore_abb();
             
             
         ?>
