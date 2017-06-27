@@ -25,7 +25,7 @@ and open the template in the editor.
                  * Leggo il file e lo salvo in una variabile(testo consecutivo senza alcuna tabulazione)
                  * 
                  * Esplode il testo in un array i cui campi vengono definiti da "\n"
-                 * in questo caso ogni elemento contiene una riga
+                 * ogni elemento contiene una riga
                  */
 
                 $txt_file    = file_get_contents('C:\Users\senma\Desktop\File Telecom\Rubrica-31-05-17.csv');
@@ -49,7 +49,7 @@ and open the template in the editor.
                 $GLOBALS['rubrica']=$info;
                 
             }
-            leggiRubrica();
+            //leggiRubrica();
             //echo $rubrica[3]['num_SIM'] . '<br />';
 
             
@@ -113,14 +113,63 @@ and open the template in the editor.
                         $id_array_voce=0;
                         $id_array_dati=0;
                     }
-                    
                 }     
-  
+        
+            $GLOBALS['dati']=$super_data_array;
+                                 
+            }
+            //scansionatore_abb();
+            
+            
+            function apri_collegamentoDB(){
+                $servername = "x023";
+                $username = "";
+                $password = "";
+                $dbname = "";
+
+                // creo la connessione
+                $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+                // verifico la connessione
+                if (!$conn) {
+                    die("Connection failed: " . mysqli_connect_error());
+                }
+                
+                // sql per creare una tabella
+                $sql = "CREATE TABLE MyGuests (
+                id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+                firstname VARCHAR(30) NOT NULL,
+                lastname VARCHAR(30) NOT NULL,
+                email VARCHAR(50),
+                reg_date TIMESTAMP
+                )";
+
+                //esegueo query e verifico esito
+                if (mysqli_query($conn, $sql)) {
+                    echo "Table MyGuests created successfully";
+                } else {
+                    echo "Error creating table: " . mysqli_error($conn);
+                }
+                
+                //sql per inserimento dati
+                $sql = "INSERT INTO MyGuests (firstname, lastname, email)
+                        VALUES ('John', 'Doe', 'john@example.com')";
+
+                //esegueo query e verifico esito
+                if (mysqli_query($conn, $sql)) {
+                    echo "New record created successfully";
+                } else {
+                    echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                }
+
+                
+                
             }
             
-            scansionatore_abb();
+            apri_collegamentoDB();
             
             
+           
         ?>
     </body>
 </html>
