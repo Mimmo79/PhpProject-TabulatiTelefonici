@@ -54,8 +54,6 @@ and open the template in the editor.
 
             
             
-
-            function scansionatore_abb($id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
              /* 
              * Argomenti:
              * 
@@ -66,6 +64,8 @@ and open the template in the editor.
              * 4 - codice che identifica una linea dati
              * 
              */
+            function scansionatore_abb($id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
+
                                 
                 $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
@@ -78,16 +78,16 @@ and open the template in the editor.
                 
 
                 
-//super_data_array[n][d][y][x]
-//----------------------------
-//
-//[n=0][d=0][y=0][x=0] n° SIM 1
-//[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-//[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-//
-//[n=1][d=0][y=0][x=0] n° SIM 2
-//[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-//[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
+                //super_data_array[n][d][y][x]
+                //----------------------------
+                //
+                //[n=0][d=0][y=0][x=0] n° SIM 1
+                //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+                //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+                //
+                //[n=1][d=0][y=0][x=0] n° SIM 2
+                //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+                //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
                 
                 $n=0;                                                       // indice SIM
                 $id_array_voce=0;
@@ -119,6 +119,118 @@ and open the template in the editor.
                                  
             }
             //scansionatore_abb();
+            
+            function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
+
+                                
+                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+                $linee  = explode("\n", $telecom_file);             // array delle righe                       
+                foreach($linee as $n_linea => $riga){               // scansione riga x riga   
+                    $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
+                    for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
+                        $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
+                    }
+                }   
+                
+
+                
+                //super_data_array[n][d][y][x]
+                //----------------------------
+                //
+                //[n=0][d=0][y=0][x=0] n° SIM 1
+                //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+                //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+                //
+                //[n=1][d=0][y=0][x=0] n° SIM 2
+                //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+                //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
+                
+                $n=0;                                                       // indice SIM
+                $id_array_voce=0;
+                $id_array_dati=0;
+                for ($x=0; $x<count($linee); $x++) {                        // per ogni riga di "data_array"
+                    if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
+                        $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
+                    } 
+                    if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
+                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga voce
+                            $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
+                        }
+                        $id_array_voce++;
+                    }
+                    if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
+                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga dati
+                            $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
+                        }
+                        $id_array_dati++;
+                    }
+                    if ($data_array[$x][0] == $id_stop){                     // identifico la linea di fine report              
+                        $n++;
+                        $id_array_voce=0;
+                        $id_array_dati=0;
+                    }
+                }     
+        
+            $GLOBALS['dati']=$super_data_array;
+                                 
+            }
+            //scansionatore_ric();
+            
+            function scansionatore_ric_riep($id_start = 05, $id_stop = 25, $id_pers = 15, $id_voce = 61, $id_dati = 63){
+
+                                
+                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+                $linee  = explode("\n", $telecom_file);             // array delle righe                       
+                foreach($linee as $n_linea => $riga){               // scansione riga x riga   
+                    $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
+                    for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
+                        $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
+                    }
+                }   
+                
+
+                
+                //super_data_array[n][d][y][x]
+                //----------------------------
+                //
+                //[n=0][d=0][y=0][x=0] n° SIM 1
+                //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+                //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+                //
+                //[n=1][d=0][y=0][x=0] n° SIM 2
+                //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+                //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
+                
+                $n=0;                                                       // indice SIM
+                $id_array_voce=0;
+                $id_array_dati=0;
+                for ($x=0; $x<count($linee); $x++) {                        // per ogni riga di "data_array"
+                    if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
+                        $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
+                    } 
+                    if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
+                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga voce
+                            $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
+                        }
+                        $id_array_voce++;
+                    }
+                    if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
+                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga dati
+                            $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
+                        }
+                        $id_array_dati++;
+                    }
+                    if ($data_array[$x][0] == $id_stop){                     // identifico la linea di fine report              
+                        $n++;
+                        $id_array_voce=0;
+                        $id_array_dati=0;
+                    }
+                }     
+        
+            $GLOBALS['dati']=$super_data_array;
+                                 
+            }
+            //scansionatore_riep();
             
             
             function apri_collegamentoDB(){
@@ -166,7 +278,7 @@ and open the template in the editor.
                 
             }
             
-            apri_collegamentoDB();
+            //apri_collegamentoDB();
             
             
            
