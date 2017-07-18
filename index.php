@@ -176,10 +176,10 @@ and open the template in the editor.
             }
             //scansionatore_ric();
             
-            function scansionatore_ric_riep($id_start = 05, $id_stop = 25, $id_pers = 15, $id_voce = 61, $id_dati = 63){
+            function scansionatore_ric_riep($id_start = 05, $id_stop = 25, $id_pers = 15){
 
                                 
-                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\Riepilogo_Personali\201701888011111046R.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
                 foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                     $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -196,41 +196,39 @@ and open the template in the editor.
                 //[n=0][d=0][y=0][x=0] n° SIM 1
                 //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
                 //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+                //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
                 //
                 //[n=1][d=0][y=0][x=0] n° SIM 2
                 //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-                //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
+                //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+                //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
+
                 
                 $n=0;                                                       // indice SIM
-                $id_array_voce=0;
-                $id_array_dati=0;
+                $id_array=0;
                 for ($x=0; $x<count($linee); $x++) {                        // per ogni riga di "data_array"
+                    echo $data_array[$x][0] . " " . $x .  '<br />';
                     if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
-                        $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
+                        $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM
+                        //echo $data_array[$x][1] . 'c <br />';
                     } 
-                    if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
-                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga voce
-                            $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
+                    if (strpos($data_array[$x][1],"PERSONALE")=== TRUE){            // identifico la linea di traf. voce
+                        for ($e=0; $e<6; $e++) {                            // trasferisco la riga
+                            $super_data_array[$n][3][$id_array][$e] = $data_array[$x][$e];
+                            //echo $data_array[$x][$e] . '<br />';
                         }
-                        $id_array_voce++;
-                    }
-                    if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
-                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga dati
-                            $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
-                        }
-                        $id_array_dati++;
+                        $id_array++;
                     }
                     if ($data_array[$x][0] == $id_stop){                     // identifico la linea di fine report              
                         $n++;
-                        $id_array_voce=0;
-                        $id_array_dati=0;
+                        $id_array=0;
                     }
                 }     
-        
+            echo "ciao";
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            //scansionatore_riep();
+            scansionatore_ric_riep();
             
             
             function apri_collegamentoDB(){
