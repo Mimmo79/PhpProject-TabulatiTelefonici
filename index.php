@@ -52,10 +52,9 @@ and open the template in the editor.
             //leggiRubrica();
             //echo $rubrica[3]['num_SIM'] . '<br />';
 
-            
-            
-             /* 
-             * Argomenti:
+     
+            /* 
+             * @argument
              * 
              * 1 - codice identificativo della riga in cui compare il numero di cellulare
              *     che identifica l'inizio del tabulato
@@ -92,7 +91,7 @@ and open the template in the editor.
                 $n=0;                                                       // indice SIM
                 $id_array_voce=0;
                 $id_array_dati=0;
-                for ($x=0; $x<count($linee); $x++) {                        // per ogni riga del "data_array"
+                for ($x=0; $x<count($linee)-1; $x++) {                        // per ogni riga del "data_array" N.B. -1 perchl'ultima riga del file è vuota
                     if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
                         $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
                     } 
@@ -130,6 +129,7 @@ and open the template in the editor.
                     for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
                         $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
                     }
+                //echo $n_linea . " " . $elem_riga[0] . '<br />' ;  //linea debug
                 }   
                 
 
@@ -145,10 +145,11 @@ and open the template in the editor.
                 //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
                 //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
                 
+                
                 $n=0;                                                       // indice SIM
                 $id_array_voce=0;
                 $id_array_dati=0;
-                for ($x=0; $x<count($linee); $x++) {                        // per ogni riga di "data_array"
+                for ($x=0; $x<count($linee)-1; $x++) {                      // per ogni riga di "data_array" N.B. -1 perchl'ultima riga del file è vuota
                     if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
                         $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
                     } 
@@ -181,11 +182,12 @@ and open the template in the editor.
                                 
                 $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\Riepilogo_Personali\201701888011111046R.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
-                foreach($linee as $n_linea => $riga){               // scansione riga x riga   
+                foreach($linee as $n_linea => $riga){               // scansione riga x riga (n_linea parte da 0) 
                     $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
                     for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
                         $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
                     }
+                //echo $n_linea . " " . $elem_riga[0] . '<br />' ;  //linea debug                    
                 }   
                 
 
@@ -202,20 +204,18 @@ and open the template in the editor.
                 //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
                 //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
                 //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
-
+                
+                
                 
                 $n=0;                                                       // indice SIM
                 $id_array=0;
-                for ($x=0; $x<count($linee); $x++) {                        // per ogni riga di "data_array"
-                    echo $data_array[$x][0] . " " . $x .  '<br />';
+                for ($x=0; $x<count($linee)-1; $x++) {                      // per ogni riga di "data_array" N.B. -1 perchl'ultima riga del file è vuota
                     if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
                         $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM
-                        //echo $data_array[$x][1] . 'c <br />';
                     } 
-                    if (strpos($data_array[$x][1],"PERSONALE")=== TRUE){            // identifico la linea di traf. voce
+                    if (strpos($data_array[$x][1],"PERSONALE")=== TRUE){    // identifico la linea di traf. voce
                         for ($e=0; $e<6; $e++) {                            // trasferisco la riga
                             $super_data_array[$n][3][$id_array][$e] = $data_array[$x][$e];
-                            //echo $data_array[$x][$e] . '<br />';
                         }
                         $id_array++;
                     }
@@ -223,13 +223,13 @@ and open the template in the editor.
                         $n++;
                         $id_array=0;
                     }
-                }     
-            echo "ciao";
+                }
+                
+            
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            scansionatore_ric_riep();
-            
+            //scansionatore_ric_riep();
             
             function apri_collegamentoDB(){
                 $servername = "x023";
@@ -275,7 +275,6 @@ and open the template in the editor.
                 
                 
             }
-            
             //apri_collegamentoDB();
             
             
