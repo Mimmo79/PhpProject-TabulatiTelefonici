@@ -120,8 +120,7 @@ and open the template in the editor.
             //scansionatore_abb();
             
             function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
-
-                                
+              
                 $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
                 foreach($linee as $n_linea => $riga){               // scansione riga x riga   
@@ -131,9 +130,8 @@ and open the template in the editor.
                     }
                 //echo $n_linea . " " . $elem_riga[0] . '<br />' ;  //linea debug
                 }   
-                
 
-                
+                /*
                 //super_data_array[n][d][y][x]
                 //----------------------------
                 //
@@ -144,26 +142,30 @@ and open the template in the editor.
                 //[n=1][d=0][y=0][x=0] n° SIM 2
                 //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
                 //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
-                
+                */
                 
                 $n=0;                                                       // indice SIM
                 $id_array_voce=0;
                 $id_array_dati=0;
                 for ($x=0; $x<count($linee)-1; $x++) {                      // per ogni riga di "data_array" N.B. -1 perchl'ultima riga del file è vuota
+                    
                     if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
                         $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
-                    } 
+                    }
+                    
                     if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
-                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga voce
+                        for ($e=0; $e<8; $e++) {                            // trasferisco ogni elemento della riga
                             $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
                         }
-                        $id_array_voce++;
+                        $id_array_voce++;                                   // incremento il puntatore nell'array di destinazione
+                        $super_data_array[$n][1][$id_array_voce][0]="***";    // inserisco identificativo di chiusura
                     }
                     if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
-                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga dati
+                        for ($e=0; $e<8; $e++) {                            // trasferisco ogni elemento della riga
                             $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
                         }
-                        $id_array_dati++;
+                        $id_array_dati++;                                   // incremento il puntatore nell'array di destinazione
+                        $super_data_array[$n][2][$id_array_dati][0]="***";    // inserisco identificativo di chiusura
                     }
                     if ($data_array[$x][0] == $id_stop){                     // identifico la linea di fine report              
                         $n++;
@@ -171,11 +173,11 @@ and open the template in the editor.
                         $id_array_dati=0;
                     }
                 }     
-        
+            
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            //scansionatore_ric();
+            scansionatore_ric();
             
             function scansionatore_ric_riep($id_start = 05, $id_stop = 25, $id_pers = 15){
 
@@ -231,6 +233,58 @@ and open the template in the editor.
             }
             //scansionatore_ric_riep();
             
+            function insDB_ric() { 
+                
+                $servername = "lnx023";
+                $username = "telefonia";
+                $password = "telefonia";
+                $dbname = "telefonia";
+
+                // creo la connessione
+                $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+                // verifico la connessione
+                if (!$conn) {
+                    die("Connection failed: " . mysqli_connect_error());
+                }
+   
+                
+                for ($n=0; $n<count($GLOBALS['dati']); $n++) {                           
+                    for ($i=0; $i<100000; $i++){
+                        
+                        echo $GLOBALS['dati'][$n][1][$i][0] . '<br />'. $n;
+                        if ($GLOBALS['dati'][$n][1][$i][0]==="***"){
+                            echo "ciao i=".$i . " n=".$n;
+                            break;
+                        }
+                        
+                        $num=$GLOBALS['dati'][$n][0][0][0];         //numero SIM
+                        $campo_1=$GLOBALS['dati'][$n][1][$i][0];    //data
+                        $campo_2=$GLOBALS['dati'][$n][1][$i][1];    //ora
+                        $campo_3=$GLOBALS['dati'][$n][1][$i][2];    //numero chiamato
+                        $campo_4=$GLOBALS['dati'][$n][1][$i][3];    //durata
+                        $campo_5=$GLOBALS['dati'][$n][1][$i][4];    //costo
+                        $campo_6=$GLOBALS['dati'][$n][1][$i][5];    //tipo es. AZ SMS ORIGINATO
+                        $campo_7=$GLOBALS['dati'][$n][1][$i][6];    //tipo es. Aziendale
+
+
+                        //sql per inserimento dati
+                        $sql = "INSERT INTO Prova (nSIM, data, ora, numeroChiamato, durata, costo, direttrice, tipo)
+                                VALUES ( $num , '$campo_1', '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7' )";
+
+                        //esegueo query e verifico esito
+                        if (!mysqli_query($conn, $sql)) {
+                            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                        }
+                        
+
+                    }    
+                }
+            }       
+            insDB_ric();
+            
+            
+            
             function apri_collegamentoDB(){
                 $servername = "x023";
                 $username = "";
@@ -245,6 +299,7 @@ and open the template in the editor.
                     die("Connection failed: " . mysqli_connect_error());
                 }
                 
+                /*
                 // sql per creare una tabella
                 $sql = "CREATE TABLE MyGuests (
                 id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
@@ -261,6 +316,21 @@ and open the template in the editor.
                     echo "Error creating table: " . mysqli_error($conn);
                 }
                 
+                 * 
+                 */
+                
+
+                    //sql per inserimento dati
+                    $sql = "INSERT INTO Prova (nSIM, report)
+                            VALUES ( ciao' , 'bye' )";
+
+                    //esegueo query e verifico esito
+                    if (!mysqli_query($conn, $sql)) {
+                        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                    }
+                
+                
+                
                 //sql per inserimento dati
                 $sql = "INSERT INTO MyGuests (firstname, lastname, email)
                         VALUES ('John', 'Doe', 'john@example.com')";
@@ -271,10 +341,8 @@ and open the template in the editor.
                 } else {
                     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                 }
-
-                
-                
-            }
+            
+            }          
             //apri_collegamentoDB();
             
             
