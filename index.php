@@ -96,16 +96,18 @@ and open the template in the editor.
                         $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
                     } 
                     if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
-                        for ($e=0; $e<9; $e++) {                            // trasferisco la riga voce
+                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga voce
                             $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
                         }
                         $id_array_voce++;
+                        $super_data_array[$n][1][$id_array_voce][0]="***";
                     }
                     if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
-                        for ($e=0; $e<9; $e++) {                            // trasferisco la riga dati
+                        for ($e=0; $e<8; $e++) {                            // trasferisco la riga dati
                             $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
                         }
                         $id_array_dati++;
+                        $super_data_array[$n][2][$id_array_dati][0]="***";
                     }
                     if ($data_array[$x][0] == $id_stop){                     // identifico la linea di fine report              
                         $n++;
@@ -117,11 +119,14 @@ and open the template in the editor.
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            //scansionatore_abb();
+            scansionatore_abb();
+
+
+            
             
             function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
-              
-                $telecom_file = file_get_contents('/home/massi/Scrivania/File Telecom/Ricaricabile/201701888011111046A.dat');
+                //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
+                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile/201701888011111046A.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
                 foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                     $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -177,7 +182,10 @@ and open the template in the editor.
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            scansionatore_ric();
+            //scansionatore_ric();
+    
+            
+            
             
             function scansionatore_ric_riep($id_start = 05, $id_stop = 25, $id_pers = 15){
 
@@ -232,10 +240,13 @@ and open the template in the editor.
                                  
             }
             //scansionatore_ric_riep();
+
+     
             
-            function insDB_ric() { 
+            
+            function insDB_abb() { 
                 
-                $servername = "localhost";
+                $servername = "lnx023";
                 $username = "root";
                 $password = "";
                 $dbname = "Telefonia";
@@ -280,9 +291,62 @@ and open the template in the editor.
                     }    
                 }
             }       
-            insDB_ric();
+            //insDB_abb();
             
             
+
+            
+            function insDB_ric() { 
+                
+                $servername = "lnx023";
+                $username = "root";
+                $password = "";
+                $dbname = "Telefonia";
+
+                // creo la connessione
+                $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+                // verifico la connessione
+                if (!$conn) {
+                    die("Connection failed: " . mysqli_connect_error());
+                }
+   
+                
+                for ($n=0; $n<count($GLOBALS['dati']); $n++) {                           
+                    for ($i=0; $i<100000; $i++){
+                        
+                        if ($GLOBALS['dati'][$n][1][$i][0]==="***"){
+                            break;
+                        }
+                        
+                        $num=$GLOBALS['dati'][$n][0][0][0];         //numero SIM
+                        $campo_1=$GLOBALS['dati'][$n][1][$i][0];    //cod
+                        $campo_2=$GLOBALS['dati'][$n][1][$i][1];    //data
+                        $campo_3=$GLOBALS['dati'][$n][1][$i][2];    //ora
+                        $campo_4=$GLOBALS['dati'][$n][1][$i][3];    //numero chiamato
+                        $campo_5=$GLOBALS['dati'][$n][1][$i][4];    //durata
+                        $campo_6=$GLOBALS['dati'][$n][1][$i][5];    //costo
+                        $campo_7=$GLOBALS['dati'][$n][1][$i][6];    //tipo es. AZ SMS ORIGINATO
+                        $campo_8=$GLOBALS['dati'][$n][1][$i][7];    //tipo es. Aziendale
+
+                        echo $num;
+                        //sql per inserimento dati
+                        $sql = "INSERT INTO Prova (nSIM, cod, data, ora, numeroChiamato, durata, costo, direttrice, tipo)
+                                VALUES ( '$num' , '$campo_1', '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', '$campo_8' )";
+
+                        //esegueo query e verifico esito
+                        if (!mysqli_query($conn, $sql)) {
+                            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                        }
+                        
+
+                    }    
+                }
+            }       
+            //insDB_ric();
+            
+            
+
             
             function apri_collegamentoDB(){
                 $servername = "x023";
