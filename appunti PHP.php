@@ -58,8 +58,9 @@ and orange will be assigned to $fruit.
 
 
 
-
-
+*********** Mysql
+inserire un campo data come stringa es. '2017-10-11' , '20171011' è valido
+inserire un campo data come intero es. 20171011 è valido
 
 
 

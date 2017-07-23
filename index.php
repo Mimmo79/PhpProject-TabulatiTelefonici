@@ -119,14 +119,14 @@ and open the template in the editor.
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            scansionatore_abb();
+            //scansionatore_abb();
 
 
             
             
             function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
                 //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
-                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile/201701888011111046A.dat');
+                $telecom_file = file_get_contents('C:\Users\Massi\Desktop\File Telecom\Ricaricabile/201701888011111046A.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
                 foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                     $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -182,7 +182,7 @@ and open the template in the editor.
             $GLOBALS['dati']=$super_data_array;
                                  
             }
-            //scansionatore_ric();
+            scansionatore_ric();
     
             
             
@@ -298,61 +298,77 @@ and open the template in the editor.
             
             function insDB_ric() { 
                 
-                $servername = "lnx023";
+                $servername = "localhost";
                 $username = "root";
                 $password = "";
-                $dbname = "Telefonia";
+                $dbname = "telefonia";
 
-                // creo la connessione
-                $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-                // verifico la connessione
-                if (!$conn) {
-                    die("Connection failed: " . mysqli_connect_error());
-                }
    
-                
-                for ($n=0; $n<count($GLOBALS['dati']); $n++) {                           
+                $sql ="";
+                for ($n=0; $n<count($GLOBALS['dati']); $n++) {    
+                    $num=(float)trim($GLOBALS['dati'][$n][0][0][0]);    //numero SIM, trim elimina gli spazi
+
                     for ($i=0; $i<100000; $i++){
                         
                         if ($GLOBALS['dati'][$n][1][$i][0]==="***"){
                             break;
                         }
                         
-                        $num=$GLOBALS['dati'][$n][0][0][0];         //numero SIM
-                        $campo_1=$GLOBALS['dati'][$n][1][$i][0];    //cod
-                        $campo_2=$GLOBALS['dati'][$n][1][$i][1];    //data
-                        $campo_3=$GLOBALS['dati'][$n][1][$i][2];    //ora
-                        $campo_4=$GLOBALS['dati'][$n][1][$i][3];    //numero chiamato
-                        $campo_5=$GLOBALS['dati'][$n][1][$i][4];    //durata
-                        $campo_6=$GLOBALS['dati'][$n][1][$i][5];    //costo
-                        $campo_7=$GLOBALS['dati'][$n][1][$i][6];    //tipo es. AZ SMS ORIGINATO
-                        $campo_8=$GLOBALS['dati'][$n][1][$i][7];    //tipo es. Aziendale
+                        $campo_1=(int)$GLOBALS['dati'][$n][1][$i][0];   //cod
+                        $campo_2="20".$GLOBALS['dati'][$n][1][$i][1];   //data
+                        $campo_3=$GLOBALS['dati'][$n][1][$i][2];        //ora
+                        $campo_4=$GLOBALS['dati'][$n][1][$i][3];        //numero chiamato
+                        $campo_5=$GLOBALS['dati'][$n][1][$i][4];        //durata
+                        $campo_6=$GLOBALS['dati'][$n][1][$i][5];       //costo
+                        $campo_7=$GLOBALS['dati'][$n][1][$i][6];       //tipo es. AZ SMS ORIGINATO
+                        $campo_8=$GLOBALS['dati'][$n][1][$i][7];       //tipo es. Aziendale
 
-                        echo $num;
+                        
                         //sql per inserimento dati
-                        $sql = "INSERT INTO Prova (nSIM, cod, data, ora, numeroChiamato, durata, costo, direttrice, tipo)
-                                VALUES ( '$num' , '$campo_1', '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', '$campo_8' )";
-
+                        
+                        $sql .= "INSERT INTO prova (nSIM, cod, data, ora, numeroChiamato, durata, costo, direttrice, tipo)
+                                VALUES ( $num , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', '$campo_8' );";
+                        /*
                         //esegueo query e verifico esito
                         if (!mysqli_query($conn, $sql)) {
                             echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                         }
-                        
+                        */
 
-                    }    
+                    }
+                if ((!($n % 10)and $n!==0) or ($n===(count($GLOBALS['dati']))-1)){  // raggruppo sql per 10 SIM o meno se fine
+
+                    // creo la connessione
+                    $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+                    // verifico la connessione
+                    if (!$conn) {
+                        die("Connection failed: " . mysqli_connect_error());
+                    }
+
+                    //eseguo la query
+                    $sql = substr($sql, 0, -1);     //elimino l'ultimo carattere ";"
+                    if (!mysqli_multi_query($conn, $sql))
+                        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+                        
+                    
+                    //chiudo la connessione
+                    mysqli_close($conn);
+                    $sql="";                        //resetto stringa di comando
+                    
+                }
                 }
             }       
-            //insDB_ric();
+            insDB_ric();
             
-            
-
-            
-            function apri_collegamentoDB(){
-                $servername = "x023";
-                $username = "";
+ 
+ 
+            function testDB() { 
+                
+                $servername = "localhost";
+                $username = "root";
                 $password = "";
-                $dbname = "";
+                $dbname = "telefonia";
 
                 // creo la connessione
                 $conn = mysqli_connect($servername, $username, $password, $dbname);
@@ -360,55 +376,21 @@ and open the template in the editor.
                 // verifico la connessione
                 if (!$conn) {
                     die("Connection failed: " . mysqli_connect_error());
+                    
                 }
-                
-                /*
-                // sql per creare una tabella
-                $sql = "CREATE TABLE MyGuests (
-                id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
-                firstname VARCHAR(30) NOT NULL,
-                lastname VARCHAR(30) NOT NULL,
-                email VARCHAR(50),
-                reg_date TIMESTAMP
-                )";
+                $sql = "INSERT INTO prova (provadata)
+                                VALUES ( '20171014' )";
 
                 //esegueo query e verifico esito
-                if (mysqli_query($conn, $sql)) {
-                    echo "Table MyGuests created successfully";
-                } else {
-                    echo "Error creating table: " . mysqli_error($conn);
-                }
-                
-                 * 
-                 */
-                
-
-                    //sql per inserimento dati
-                    $sql = "INSERT INTO Prova (nSIM, report)
-                            VALUES ( ciao' , 'bye' )";
-
-                    //esegueo query e verifico esito
-                    if (!mysqli_query($conn, $sql)) {
-                        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-                    }
-                
-                
-                
-                //sql per inserimento dati
-                $sql = "INSERT INTO MyGuests (firstname, lastname, email)
-                        VALUES ('John', 'Doe', 'john@example.com')";
-
-                //esegueo query e verifico esito
-                if (mysqli_query($conn, $sql)) {
-                    echo "New record created successfully";
-                } else {
+                if (!mysqli_query($conn, $sql)) {
                     echo "Error: " . $sql . "<br>" . mysqli_error($conn);
                 }
+               
+
+            }
+            //testDB();
             
-            }          
-            //apri_collegamentoDB();
-            
-            
+
            
         ?>
     </body>
