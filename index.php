@@ -126,7 +126,7 @@ and open the template in the editor.
             
             function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
                 //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
-                $telecom_file = file_get_contents('C:\Users\Massi\Desktop\File Telecom\Ricaricabile/201701888011111046A.dat');
+                $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
                 $linee  = explode("\n", $telecom_file);             // array delle righe                       
                 foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                     $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -296,13 +296,8 @@ and open the template in the editor.
             
 
             
-            function insDB_ric() { 
-                
-                $servername = "localhost";
-                $username = "root";
-                $password = "";
-                $dbname = "telefonia";
-
+            function sql_ric() { 
+            
    
                 $sql ="";
                 for ($n=0; $n<count($GLOBALS['dati']); $n++) {    
@@ -326,42 +321,61 @@ and open the template in the editor.
                         
                         //sql per inserimento dati
                         
-                        $sql .= "INSERT INTO prova (nSIM, cod, data, ora, numeroChiamato, durata, costo, direttrice, tipo)
-                                VALUES ( $num , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', '$campo_8' );";
-                        /*
-                        //esegueo query e verifico esito
-                        if (!mysqli_query($conn, $sql)) {
-                            echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-                        }
-                        */
+                        $sql .= "INSERT INTO prova (nSIM, cod, data, ora, numeroChiamato, durata, costo, direttrice, tipo) VALUES ( $num , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', '$campo_8' );";
 
                     }
-                if ((!($n % 10)and $n!==0) or ($n===(count($GLOBALS['dati']))-1)){  // raggruppo sql per 10 SIM o meno se fine
+                
+                }
+                
+                //$sql = substr($sql, 0, -1);     //elimino l'ultimo carattere ";"
+                $istruzioni = explode(';', $sql);
+                foreach($istruzioni as $n_istruzione => $istruzione){
+                    $istruzione.=$istruzione;
 
-                    // creo la connessione
-                    $conn = mysqli_connect($servername, $username, $password, $dbname);
-
-                    // verifico la connessione
-                    if (!$conn) {
-                        die("Connection failed: " . mysqli_connect_error());
+                    if ($n_istruzione%100 and $n_istruzione!==0 ){
+                        mysql($istruzione);
+                        $istruzione="";
                     }
-
-                    //eseguo la query
-                    $sql = substr($sql, 0, -1);     //elimino l'ultimo carattere ";"
-                    if (!mysqli_multi_query($conn, $sql))
-                        echo "Error: " . $sql . "<br>" . mysqli_error($conn);
-                        
-                    
-                    //chiudo la connessione
-                    mysqli_close($conn);
-                    $sql="";                        //resetto stringa di comando
-                    
                 }
-                }
+   
             }       
-            insDB_ric();
+            sql_ric();
             
- 
+            function mysql($sql){
+                
+                $servername = "lnx023";
+                $username = "telefonia";
+                $password = "telefonia";
+                $dbname = "telefonia";
+                
+                
+                // creo la connessione
+                $conn = mysqli_connect($servername, $username, $password, $dbname);
+
+                // verifico la connessione
+                if (!$conn) {
+                    die("Connection failed: " . mysqli_connect_error());
+                }
+                
+                
+                if (mysqli_multi_query($conn, $sql)) {
+                    do {
+                        /* store first result set */
+                        if ($result = mysqli_store_result($conn)) {
+                            while ($row = mysqli_fetch_row($result)) {
+                                echo $row[0]."<br />";
+                            }
+                            mysqli_free_result($result);
+                        }
+                        /* print divider */
+                        if (mysqli_more_results($conn)) {
+                            echo "altro <br />";
+                        }
+                        //echo $cont. "<br />";
+                    } while (mysqli_next_result($conn));
+                }
+            }
+            
  
             function testDB() { 
                 
