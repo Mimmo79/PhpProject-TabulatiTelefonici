@@ -30,10 +30,19 @@ and open the template in the editor.
         //scansionatore_abb();
         scansionatore_ric();
         //scansionatore_ric_riep();
-        //insDB_abb();
+        //sql_abb();
         sql_ric();
         //testDB();
 
+        /*
+         *  parametri DB
+         *  -------------
+         */
+        $servername = "lnx023";
+        $username = "telefonia";
+        $password = "telefonia";
+        $dbname = "telefonia";
+        
 
 
 
@@ -41,12 +50,13 @@ and open the template in the editor.
         
         
         function leggiRubrica(){
-            /*
-             * Leggo il file e lo salvo in una variabile(testo consecutivo senza alcuna tabulazione)
-             * 
-             * Esplode il testo in un array i cui campi vengono definiti da "\n"
-             * ogni elemento contiene una riga
-             */
+            
+        /*
+         * Leggo il file e lo salvo in una variabile(testo consecutivo senza alcuna tabulazione)
+         * 
+         * Esplode il testo in un array i cui campi vengono definiti da "\n"
+         * ogni elemento contiene una riga
+         */
 
             $txt_file    = file_get_contents('C:\Users\senma\Desktop\File Telecom\Rubrica-31-05-17.csv');
             $linee        = explode("\n", $txt_file);       //array di linee
@@ -82,9 +92,10 @@ and open the template in the editor.
          * 4 - codice che identifica una linea dati
          * 
          */
+
         function scansionatore_abb($id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
-
-
+        //fonia 05	AZIENDALE SMS              	Numero Altro Operatore      	3385877xxx        	170102	11:47:21	00:00:00	00000000,0280	    
+        //dati  06	AZIENDALE DATI             	I-Box                       	170127	11:35:01	00:14:11	000000003	00000000,0000	Interc 2014 2GB
             $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
             $linee  = explode("\n", $telecom_file);             // array delle righe                       
             foreach($linee as $n_linea => $riga){               // scansione riga x riga   
@@ -93,19 +104,6 @@ and open the template in the editor.
                     $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
                 }
             }   
-
-
-
-            //super_data_array[n][d][y][x]
-            //----------------------------
-            //
-            //[n=0][d=0][y=0][x=0] n° SIM 1
-            //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-            //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-            //
-            //[n=1][d=0][y=0][x=0] n° SIM 2
-            //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-            //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
 
             $n=0;                                                       // indice SIM
             $id_array_voce=0;
@@ -136,7 +134,19 @@ and open the template in the editor.
             }     
 
         $GLOBALS['dati']=$super_data_array;
-
+        
+        //super_data_array[n][d][y][x]
+        //----------------------------
+        //
+        //[n=0][d=0][y=0][x=0] n° SIM 1
+        //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+        //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
+        //
+        //[n=1][d=0][y=0][x=0] n° SIM 2
+        //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+        //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
         }
 
 
@@ -144,8 +154,9 @@ and open the template in the editor.
 
 
         function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
-            //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
-            $telecom_file = file_get_contents('C:\Users\Massi\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+        //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
+        //63	170113	17:03:18	AZ DATI NAZIONALE                                 	00020971813	00000000,0000	Aziendale	APN IBOX
+            $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
             $linee  = explode("\n", $telecom_file);             // array delle righe                       
             foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                 $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -155,19 +166,6 @@ and open the template in the editor.
             //echo $n_linea . " " . $elem_riga[0] . '<br />' ;  //linea debug
             }   
 
-            /*
-            //super_data_array[n][d][y][x]
-            //----------------------------
-            //
-            //[n=0][d=0][y=0][x=0] n° SIM 1
-            //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-            //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-            //
-            //[n=1][d=0][y=0][x=0] n° SIM 2
-            //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-            //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne           
-            */
-
             $n=0;                                                       // indice SIM
             $id_array_voce=0;
             $id_array_dati=0;
@@ -176,22 +174,21 @@ and open the template in the editor.
                 if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
                     $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
                 }
-
                 if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
                     for ($e=0; $e<8; $e++) {                            // trasferisco ogni elemento della riga
                         $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
                     }
                     $id_array_voce++;                                   // incremento il puntatore nell'array di destinazione
-                    $super_data_array[$n][1][$id_array_voce][0]="***";    // inserisco identificativo di chiusura
+                    $super_data_array[$n][1][$id_array_voce][0]="***";  // inserisco identificativo di chiusura
                 }
                 if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
                     for ($e=0; $e<8; $e++) {                            // trasferisco ogni elemento della riga
                         $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
                     }
                     $id_array_dati++;                                   // incremento il puntatore nell'array di destinazione
-                    $super_data_array[$n][2][$id_array_dati][0]="***";    // inserisco identificativo di chiusura
+                    $super_data_array[$n][2][$id_array_dati][0]="***";  // inserisco identificativo di chiusura
                 }
-                if ($data_array[$x][0] == $id_stop){                     // identifico la linea di fine report              
+                if ($data_array[$x][0] == $id_stop){                    // identifico la linea di fine report              
                     $n++;
                     $id_array_voce=0;
                     $id_array_dati=0;
@@ -200,6 +197,19 @@ and open the template in the editor.
 
         $GLOBALS['dati']=$super_data_array;
 
+        //super_data_array[n][d][y][x]
+        //----------------------------
+        //
+        //[n=0][d=0][y=0][x=0] n° SIM 1
+        //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+        //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
+        //
+        //[n=1][d=0][y=0][x=0] n° SIM 2
+        //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
+        //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
+        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
+        
         }
 
 
@@ -262,12 +272,7 @@ and open the template in the editor.
 
 
 
-        function insDB_abb() { 
-
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbname = "Telefonia";
+        function sql_abb() { 
 
             // creo la connessione
             $conn = mysqli_connect($servername, $username, $password, $dbname);
@@ -351,7 +356,7 @@ and open the template in the editor.
             foreach($istruzioni_sql as $n_istruzione => $istruzione){   
                 $comando_sql .= $istruzione . ";";                      // aggiungo il ; al termine di ogni istruzione
                 if (!($n_istruzione % 1000)and !($n_istruzione===0) or  // raggruppo le istruzioni
-                        $n_istruzione===count($istruzioni_sql)-1 ){      // sono all'ultima istruzione                       
+                        $n_istruzione===count($istruzioni_sql)-1 ){     // sono all'ultima istruzione                       
                     mysql($comando_sql);                     
                     $comando_sql="";
                 }
@@ -363,13 +368,8 @@ and open the template in the editor.
 
 
         function mysql($sql){
-
-            $servername = "localhost";
-            $username = "root";
-            $password = "";
-            $dbname = "telefonia";
-
-
+            
+            global $servername,$username,$password,$dbname;
             // creo la connessione
             $conn = mysqli_connect($servername, $username, $password, $dbname);
 
@@ -431,7 +431,7 @@ and open the template in the editor.
         $end = $time;
         
         $elapsed = $end-$start;
-        echo $elasped;
+        echo "Tempo di esecuzione : ".$elapsed;
 
            
         ?>
