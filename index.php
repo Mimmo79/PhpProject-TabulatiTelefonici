@@ -32,9 +32,9 @@ and open the template in the editor.
          *  parametri DB
          *  -------------
          */
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
+        $servername = "lnx023";
+        $username = "telefonia";
+        $password = "telefonia";
         $dbname = "telefonia";
          /*
          *  NOMI TABELLE
@@ -50,10 +50,10 @@ and open the template in the editor.
 
         //creaTabelle();
         //leggiRubrica();
-        //scansionatore_abb();
+        scansionatore_abb();
         //scansionatore_ric();
         //scansionatore_ric_riep();
-        //sql_abb();
+        sql_abb();
         //sql_ric();
         //testDB();
         //echo "ciao";
@@ -157,17 +157,18 @@ and open the template in the editor.
         //[n=1][d=0][y=0][x=0] n° SIM 2
         //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
         //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
+        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne       
+        
         }
 
 
 
-
+        
 
         function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
         //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
         //63	170113	17:03:18	AZ DATI NAZIONALE                                 	00020971813	00000000,0000	Aziendale	APN IBOX
-            $telecom_file = file_get_contents('C:\Users\massi\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+            $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
             $linee  = explode("\n", $telecom_file);             // array delle righe                       
             foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                 $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -291,11 +292,11 @@ and open the template in the editor.
                 $num=$GLOBALS['dati'][$n][0][0][0];    //numero SIM, trim elimina gli spazi es. (float)trim
                 for ($i=0; $i<100000; $i++){
                     if (!isset($GLOBALS['dati'][$n][1][$i][0])){     //se non ci sono dati esci
-                        echo $n." vuota <br>";
+                        //echo "n=".$n." riga=".$i." vuota <br>";
                         break;
                     }
                     if ($GLOBALS['dati'][$n][1][$i][0]==="***"){
-                        echo "fine";
+                        //echo "n=".$n." riga=".$i." fine <br>";
                         break;
                     }
                     
@@ -314,11 +315,11 @@ and open the template in the editor.
                     $sql .= "INSERT INTO $tab_abb_voce (nSIM, cod, tipo, direttrice, numeroChiamato, data, ora, durata, costo) "
                             . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', $campo_8 );";
 
-                    echo $sql."<br> <br>";
                 }
 
             }
         
+            /*
             //dati  06	AZIENDALE DATI             	I-Box                       	170127	11:35:01	00:14:11	000000003	00000000,0000	Interc 2014 2GB
             // DATI
             for ($n=0; $n<count($GLOBALS['dati']); $n++) {    
@@ -348,10 +349,11 @@ and open the template in the editor.
                 }
 
             }
-            
+            */
             $istruzioni_sql = explode(';', $sql);                       // creo un array con le istruzioni sql
             $comando_sql="";                                            // inizializzo la stringa di comando
-            foreach($istruzioni_sql as $n_istruzione => $istruzione){   
+            foreach($istruzioni_sql as $n_istruzione => $istruzione){
+                echo $istruzione."<br>";
                 $comando_sql .= $istruzione . ";";                      // aggiungo il ; al termine di ogni istruzione
                 if (!($n_istruzione % 1000)and !($n_istruzione===0) or  // raggruppo le istruzioni
                         $n_istruzione===count($istruzioni_sql)-1 ){     // sono all'ultima istruzione                       
@@ -530,6 +532,36 @@ and open the template in the editor.
 	`costo` DOUBLE NOT NULL,
 	`tipo` VARCHAR(50) NOT NULL,
         `apn` VARCHAR(50) NOT NULL,
+	INDEX `Indice 1` (`id`)
+        );";
+
+            global $tab_abb_voce;
+            $sql .= "CREATE TABLE $tab_abb_voce (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`nSIM` VARCHAR(50) NOT NULL,
+	`cod` INT(11) NOT NULL,
+	`tipo` VARCHAR(50) NOT NULL,
+	`direttrice` VARCHAR(50) NOT NULL,
+        `numeroChiamato` VARCHAR(50) NOT NULL,
+	`data` DATE NOT NULL,
+	`ora` TIME NOT NULL,
+	`durata` TIME NOT NULL,
+	`costo` DOUBLE NOT NULL,
+	INDEX `Indice 1` (`id`)
+        );";
+         
+            global $tab_abb_dati;
+            $sql .=  "CREATE TABLE $tab_abb_dati (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`nSIM` VARCHAR(50) NOT NULL,
+	`cod` INT(11) NOT NULL,
+	`tipo` VARCHAR(50) NOT NULL,
+	`data` DATE NOT NULL,
+	`ora` TIME NOT NULL,
+	`durata` TIME NOT NULL,
+        `byte` INT(11) NOT NULL,
+	`costo` DOUBLE NOT NULL,
+	`bundle` VARCHAR(50) NOT NULL,
 	INDEX `Indice 1` (`id`)
         );";
 
