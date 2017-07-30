@@ -50,13 +50,18 @@ and open the template in the editor.
 
         //creaTabelle();
         //leggiRubrica();
-        scansionatore_abb();
+        //scansionatore_abb();
         //scansionatore_ric();
         //scansionatore_ric_riep();
-        sql_abb();
+        //sql_abb();
         //sql_ric();
         //testDB();
         //echo "ciao";
+        
+        
+        $obj = new Classe_Elaborazione_File();
+                
+        var_dump($obj);
         
 
         
