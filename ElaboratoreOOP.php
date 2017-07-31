@@ -14,22 +14,24 @@
 class ElaboratoreOOP {
     
     private $array_4d_result="";
-    /*
-    *  parametri DB
-    *  -------------
-    */
-    private $servername = "localhost";
-    private $username = "root";
-    private $password = "";
+    protected $nome_file = 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat';
+    
+    /**
+     *  parametri DB
+     *  -------------
+     */
+    private $servername = "lnx023";
+    private $username = "telefonia";
+    private $password = "telefonia";
     private $dbname = "telefonia";
     
     /**
-     *  NOMI TABELLE
+     *  nomi tabelle
      *  -------------
      * @var $tab_ric_voce è il nome della tabella in cui verranno salvati i dati voce delle ricaricabili
      * @var $tab_ric_dati è il nome della tabella in cui verranno salvati i report dati delle ricaricabili
      */
-    public $tab_ric_voce = "ric_voce";
+    private $tab_ric_voce = "ric_voce";
     private $tab_ric_dati = "ric_dati";
     private $tab_abb_voce = "abb_voce";
     private $tab_abb_dati = "abb_dati";
@@ -139,7 +141,7 @@ class ElaboratoreAbb extends ElaboratoreOOP {
     public function scansionatore_abb($id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
     //fonia 05	AZIENDALE SMS              	Numero Altro Operatore      	3385877xxx        	170102	11:47:21	00:00:00	00000000,0280	    
     //dati  06	AZIENDALE DATI             	I-Box                       	170127	11:35:01	00:14:11	000000003	00000000,0000	Interc 2014 2GB
-        $telecom_file = file_get_contents('C:\Users\massi\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat');
+        $telecom_file = file_get_contents($this->nome_file);  
         $linee  = explode("\n", $telecom_file);             // array delle righe                       
         foreach($linee as $n_linea => $riga){               // scansione riga x riga   
             $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -279,7 +281,7 @@ class ElaboratoreRic extends ElaboratoreOOP {
     private function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
         //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
         //63	170113	17:03:18	AZ DATI NAZIONALE                                 	00020971813	00000000,0000	Aziendale	APN IBOX
-            $telecom_file = file_get_contents('C:\Users\massi\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+            $telecom_file = file_get_contents($this->nome_file);
             $linee  = explode("\n", $telecom_file);             // array delle righe                       
             foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                 $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
@@ -410,5 +412,5 @@ class ElaboratoreRic extends ElaboratoreOOP {
 $obj = new ElaboratoreAbb();
 $obj->creaTabelle();
 $obj->scansionatore_abb();
-$obj->sql_abb();
+//$obj->sql_abb();
 
