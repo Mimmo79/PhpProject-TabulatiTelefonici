@@ -32,9 +32,9 @@ and open the template in the editor.
          *  parametri DB
          *  -------------
          */
-        $servername = "localhost";
-        $username = "root";
-        $password = "";
+        $servername = "lnx023";
+        $username = "telefonia";
+        $password = "telefonia";
         $dbname = "telefonia";
          /*
          *  NOMI TABELLE
@@ -51,17 +51,13 @@ and open the template in the editor.
         //creaTabelle();
         //leggiRubrica();
         //scansionatore_abb();
-        //scansionatore_ric();
+        scansionatore_ric();
         //scansionatore_ric_riep();
         //sql_abb();
-        //sql_ric();
+        sql_ric();
         //testDB();
         //echo "ciao";
-        
-        
-        $obj = new Classe_Elaborazione_File();
-                
-        var_dump($obj);
+
         
 
         
@@ -173,7 +169,7 @@ and open the template in the editor.
         function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
         //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
         //63	170113	17:03:18	AZ DATI NAZIONALE                                 	00020971813	00000000,0000	Aziendale	APN IBOX
-            $telecom_file = file_get_contents('C:\Users\massi\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
+            $telecom_file = file_get_contents('C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat');
             $linee  = explode("\n", $telecom_file);             // array delle righe                       
             foreach($linee as $n_linea => $riga){               // scansione riga x riga   
                 $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
