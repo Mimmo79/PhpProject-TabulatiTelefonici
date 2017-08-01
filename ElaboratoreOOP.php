@@ -34,9 +34,10 @@ class ElaboratoreOOP {
      */
     protected $tab_ric_voce = "ric_voce";
     protected $tab_ric_dati = "ric_dati";
+    protected $tab_ric_riep = "ric_riep";
     protected $tab_abb_voce = "abb_voce";
     protected $tab_abb_dati = "abb_dati";
-    protected $tab_ric_riep = "ric_riep";
+
     
     public      function getProperty(){
         return $this->array_4d_result;
@@ -135,7 +136,7 @@ class ElaboratoreOOP {
     `durata` TIME NOT NULL,
     `nonUsato` VARCHAR(50) NOT NULL,
     `costo` DOUBLE NOT NULL,
-    `data` TIME NOT NULL,
+    `data` DATE NOT NULL,
     INDEX `Indice 1` (`id`)
     );";
                 
@@ -502,7 +503,7 @@ class ElaboratoreRicRiep extends ElaboratoreOOP {
                 $campo_4=$this->array_4d_result[$n][2][$i][3];          //durata
                 $campo_5=$this->array_4d_result[$n][2][$i][4];          //nonUsato
                 $campo_6=str_replace(",", ".",$this->array_4d_result[$n][2][$i][5]);  //costo
-                $campo_7=$this->data;                              //data
+                $campo_7=$this->data."01";                              //data
   
 
 
