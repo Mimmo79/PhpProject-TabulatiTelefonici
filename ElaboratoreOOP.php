@@ -11,18 +11,19 @@
  *
  * @author Massi
  */
+
 class ElaboratoreOOP {
     
     private $array_4d_result="";
-    protected $nome_file = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\Riepilogo_Personali\201701888011111046R.dat';
+    protected $nome_file = 'C:\Users\massi\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat';
     
     /**
      *  parametri DB
      *  -------------
      */
-    private $servername = "lnx023";
-    private $username = "telefonia";
-    private $password = "telefonia";
+    private $servername = "localhost";
+    private $username = "root";
+    private $password = "";
     private $dbname = "telefonia";
     
     /**
@@ -70,6 +71,23 @@ class ElaboratoreOOP {
         mysqli_close($conn);
     }   
     public      function creaTabelle(){
+
+//        $mysqli = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+//        /* check connection */
+//        if (mysqli_connect_errno()) {
+//            printf("Connect failed: %s\n", mysqli_connect_error());
+//            exit();
+//        }
+//        $mysqli->query("SHOW TABLES FROM telefonia");
+//        if ($result = $mysqli->store_result()) {
+//            while ($row = $result->fetch_row()) {
+//                printf("%s\n ciao", $row[0]);
+//            }
+//            $result->free();
+//        }
+//        $mysqli->close();
+       
+        
         $sql = "CREATE TABLE $this->tab_ric_voce (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `nSIM` VARCHAR(50) NOT NULL,
@@ -83,6 +101,7 @@ class ElaboratoreOOP {
     `tipo` VARCHAR(50) NOT NULL,
     INDEX `Indice 1` (`id`)
     );";
+        
 
         $sql .=  "CREATE TABLE $this->tab_ric_dati (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -145,10 +164,16 @@ class ElaboratoreOOP {
     $this->mysql($sql);
 
     }
+    public      function var_dump_pre() {
+        echo '<pre>';
+        var_dump($this);
+        echo '</pre>';
+        return null;
+    }
           
 }
 
-class ElaboratoreAbb extends ElaboratoreOOP {
+class ElaboratoreAbb        extends ElaboratoreOOP {
     
     public function __construct(){
         $this->scansionatore_abb();
@@ -171,18 +196,18 @@ class ElaboratoreAbb extends ElaboratoreOOP {
         $id_array_dati=0;
         for ($x=0; $x<count($linee)-1; $x++) {                        // per ogni riga del "data_array" N.B. -1 perchl'ultima riga del file è vuota
             if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
-                $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
+                $super_data_array[$n][0][0][0] = trim($data_array[$x][1]);// salvo il numero SIM  
             } 
             if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
                 for ($e=0; $e<8; $e++) {                            // trasferisco la riga voce
-                    $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
+                    $super_data_array[$n][1][$id_array_voce][$e] = trim($data_array[$x][$e]);
                 }
                 $id_array_voce++;
                 $super_data_array[$n][1][$id_array_voce][0]="***";
             }
             if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
                 for ($e=0; $e<9; $e++) {                            // trasferisco la riga dati
-                    $super_data_array[$n][2][$id_array_dati][$e] = $data_array[$x][$e];
+                    $super_data_array[$n][2][$id_array_dati][$e] = trim($data_array[$x][$e]);
                 }
                 $id_array_dati++;
                 $super_data_array[$n][2][$id_array_dati][0]="***";
@@ -288,7 +313,7 @@ class ElaboratoreAbb extends ElaboratoreOOP {
         
 }
 
-class ElaboratoreRic extends ElaboratoreOOP {
+class ElaboratoreRic        extends ElaboratoreOOP {
     
     public function __construct(){
         $this->scansionatore_ric();
@@ -313,18 +338,18 @@ class ElaboratoreRic extends ElaboratoreOOP {
             for ($x=0; $x<count($linee)-1; $x++) {                      // per ogni riga di "data_array" N.B. -1 perchl'ultima riga del file è vuota
 
                 if ($data_array[$x][0] == $id_start){                   // identifico la linea d'inizio report
-                    $super_data_array[$n][0][0][0] = $data_array[$x][1];// salvo il numero SIM  
+                    $super_data_array[$n][0][0][0] = trim($data_array[$x][1]);// salvo il numero SIM  
                 }
                 if ($data_array[$x][0] == $id_voce){                    // identifico la linea di traf. voce
                     for ($e=0; $e<8; $e++) {                            // trasferisco ogni elemento della riga
-                        $super_data_array[$n][1][$id_array_voce][$e] = $data_array[$x][$e];
+                        $super_data_array[$n][1][$id_array_voce][$e] = trim($data_array[$x][$e]);
                     }
                     $id_array_voce++;                                   // incremento il puntatore nell'array di destinazione
                     $super_data_array[$n][1][$id_array_voce][0]="***";  // inserisco identificativo di chiusura
                 }
                 if ($data_array[$x][0] == $id_dati){                    // identifico la linea di traf. dati
                     for ($e=0; $e<8; $e++) {                            // trasferisco ogni elemento della riga
-                        $super_data_array[$n-1][2][$id_array_dati][$e] = $data_array[$x][$e];   //-1 necessario perchè id_stop fra voce e dati
+                        $super_data_array[$n-1][2][$id_array_dati][$e] = trim($data_array[$x][$e]);   //-1 necessario perchè id_stop fra voce e dati
                     }
                     $id_array_dati++;                                   // incremento il puntatore nell'array di destinazione
                     $super_data_array[$n-1][2][$id_array_dati][0]="***";  // inserisco identificativo di chiusura
@@ -425,7 +450,7 @@ class ElaboratoreRic extends ElaboratoreOOP {
     }
 }
 
-class ElaboratoreRicRiep extends ElaboratoreOOP {
+class ElaboratoreRicRiep    extends ElaboratoreOOP {
     
     protected $data;
 
@@ -455,7 +480,7 @@ class ElaboratoreRicRiep extends ElaboratoreOOP {
             }
             if ($data_array[$x][0] == $id_pers and (strpos($data_array[$x][1], 'PERSONALE')===0)){       // identifico la linea di traf. personale
                 for ($e=0; $e<6; $e++) {                            // trasferisco ogni elemento della riga
-                    $super_data_array[$n][2][$id_array_riep][$e] = $data_array[$x][$e];
+                    $super_data_array[$n][2][$id_array_riep][$e] = trim($data_array[$x][$e]);
                 }
                 $id_array_riep++;                                   // incremento il puntatore nell'array di destinazione
                 $super_data_array[$n][2][$id_array_riep][0]="***";  // inserisco identificativo di chiusura
@@ -533,9 +558,11 @@ class ElaboratoreRicRiep extends ElaboratoreOOP {
 
 
 
-$obj = new ElaboratoreRicRiep();
+$obj = new ElaboratoreRic();
 $obj->creaTabelle();
-$obj->sql_ric_riep();
+//$obj->sql_ric();
+$obj->var_dump_pre();
+
  
 
 
