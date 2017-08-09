@@ -10,11 +10,100 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
+
+-- Dump della struttura del database telefonia
+CREATE DATABASE IF NOT EXISTS `telefonia` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `telefonia`;
+
+-- Dump della struttura di tabella telefonia.abb_dati
+CREATE TABLE IF NOT EXISTS `abb_dati` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nSIM` varchar(50) NOT NULL,
+  `cod` int(11) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `apn` varchar(50) NOT NULL,
+  `data` date NOT NULL,
+  `ora` time NOT NULL,
+  `durata` time NOT NULL,
+  `byte` int(11) NOT NULL,
+  `costo` double NOT NULL,
+  `bundle` varchar(50) NOT NULL,
+  KEY `Indice 1` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 -- L’esportazione dei dati non era selezionata.
+-- Dump della struttura di tabella telefonia.abb_voce
+CREATE TABLE IF NOT EXISTS `abb_voce` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nSIM` varchar(50) NOT NULL,
+  `cod` int(11) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `direttrice` varchar(50) NOT NULL,
+  `numeroChiamato` varchar(50) NOT NULL,
+  `data` date NOT NULL,
+  `ora` time NOT NULL,
+  `durata` time NOT NULL,
+  `costo` double NOT NULL,
+  KEY `Indice 1` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 -- L’esportazione dei dati non era selezionata.
+-- Dump della struttura di tabella telefonia.num_mobile
+CREATE TABLE IF NOT EXISTS `num_mobile` (
+  `idMobile` int(11) NOT NULL AUTO_INCREMENT,
+  `numeroMobile` varchar(50) NOT NULL DEFAULT '0',
+  `dataAttivazione` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `dataDisattivazione` date DEFAULT NULL,
+  KEY `Indice 1` (`idMobile`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
 -- L’esportazione dei dati non era selezionata.
+-- Dump della struttura di tabella telefonia.ric_dati
+CREATE TABLE IF NOT EXISTS `ric_dati` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nSIM` varchar(50) NOT NULL,
+  `cod` int(11) NOT NULL,
+  `data` date NOT NULL,
+  `durata` time NOT NULL,
+  `direttrice` varchar(50) NOT NULL,
+  `byte` int(11) NOT NULL,
+  `costo` double NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  `apn` varchar(50) NOT NULL,
+  KEY `Indice 1` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1131 DEFAULT CHARSET=latin1;
+
 -- L’esportazione dei dati non era selezionata.
+-- Dump della struttura di tabella telefonia.ric_riep
+CREATE TABLE IF NOT EXISTS `ric_riep` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nSIM` varchar(50) NOT NULL,
+  `cod` int(11) NOT NULL,
+  `direttrice` varchar(50) NOT NULL,
+  `numeroChiamate` int(11) NOT NULL,
+  `durata` time NOT NULL,
+  `nonUsato` varchar(50) NOT NULL,
+  `costo` double NOT NULL,
+  `data` date NOT NULL,
+  KEY `Indice 1` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 -- L’esportazione dei dati non era selezionata.
+-- Dump della struttura di tabella telefonia.ric_voce
+CREATE TABLE IF NOT EXISTS `ric_voce` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nSIM` varchar(50) NOT NULL,
+  `cod` int(11) NOT NULL,
+  `data` date NOT NULL,
+  `ora` time NOT NULL,
+  `numeroChiamato` varchar(50) NOT NULL,
+  `durata` time NOT NULL,
+  `costo` double NOT NULL,
+  `direttrice` varchar(50) NOT NULL,
+  `tipo` varchar(50) NOT NULL,
+  KEY `Indice 1` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=11322 DEFAULT CHARSET=latin1;
+
 -- L’esportazione dei dati non era selezionata.
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;
