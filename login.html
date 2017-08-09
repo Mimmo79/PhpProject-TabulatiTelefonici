@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        
+        <?php
+        
+        function ldap_authenticate($username,$password){
+            // Cambia i parametri seguenti
+            $ldaprdn = "uid=$username,ou=people,dc=domain,dc=com";
+            $ldappass = $password; // Password
+            if(!$username or !$password) { return false; }
+            // Connessione al server ldap
+            ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
+            // Cambia i parametri seguenti
+            $ldapconn = ldap_connect("ldaps://ldap.server.com")
+            or die("Non riesco a connettermi al server LDAP.");
+            if ($ldapconn) {
+                // binding
+                $ldapbind = @ldap_bind($ldapconn, $ldaprdn, $ldappass);
+                // verifica bind
+                if ($ldapbind) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
+        ?>
+        
+    </body>
+</html>
