@@ -94,7 +94,7 @@ class ElaboratoreOOP {
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `nSIM` VARCHAR(50) NOT NULL,
     `cod` INT(11) NOT NULL,
-    `data` DATE NOT NULL,
+    `data_chiamata` DATE NOT NULL,
     `ora` TIME NOT NULL,
     `numeroChiamato` VARCHAR(50) NOT NULL,
     `durata` TIME NOT NULL,
@@ -109,7 +109,7 @@ class ElaboratoreOOP {
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `nSIM` VARCHAR(50) NOT NULL,
     `cod` INT(11) NOT NULL,
-    `data` DATE NOT NULL,
+    `data_conn` DATE NOT NULL,
     `durata` TIME NOT NULL,
     `direttrice` VARCHAR(50) NOT NULL,
     `byte` INT(11) NOT NULL,
@@ -126,7 +126,7 @@ class ElaboratoreOOP {
     `tipo` VARCHAR(50) NOT NULL,
     `direttrice` VARCHAR(50) NOT NULL,
     `numeroChiamato` VARCHAR(50) NOT NULL,
-    `data` DATE NOT NULL,
+    `data_chiamata` DATE NOT NULL,
     `ora` TIME NOT NULL,
     `durata` TIME NOT NULL,
     `costo` DOUBLE NOT NULL,
@@ -139,7 +139,7 @@ class ElaboratoreOOP {
     `cod` INT(11) NOT NULL,
     `tipo` VARCHAR(50) NOT NULL,
     `apn` VARCHAR(50) NOT NULL,
-    `data` DATE NOT NULL,
+    `data_conn` DATE NOT NULL,
     `ora` TIME NOT NULL,
     `durata` TIME NOT NULL,
     `byte` INT(11) NOT NULL,
@@ -157,7 +157,7 @@ class ElaboratoreOOP {
     `durata` TIME NOT NULL,
     `nonUsato` VARCHAR(50) NOT NULL,
     `costo` DOUBLE NOT NULL,
-    `data` DATE NOT NULL,
+    `data_chiamata` DATE NOT NULL,
     INDEX `Indice 1` (`id`)
     );";
                 
@@ -278,14 +278,14 @@ class ElaboratoreAbb        extends ElaboratoreOOP {
             $campo_2=$this->array_4d_result[$n][1][$i][1];        //tipo
             $campo_3=str_replace("'", "",$this->array_4d_result[$n][1][$i][2]);        //direttrice
             $campo_4=$this->array_4d_result[$n][1][$i][3];        //numero chiamato
-            $campo_5="20".$this->array_4d_result[$n][1][$i][4];   //data
+            $campo_5="20".$this->array_4d_result[$n][1][$i][4];   //data_chiamata
             $campo_6=$this->array_4d_result[$n][1][$i][5];        //ora
             $campo_7=$this->array_4d_result[$n][1][$i][6];        //durata
             $campo_8=str_replace(",", ".",$this->array_4d_result[$n][1][$i][7]);        //costo
 
 
             //sql per inserimento dati voce
-            $sql .= "INSERT INTO `$this->tab_abb_voce` (`nSIM`, `cod`, `tipo`, `direttrice`, `numeroChiamato`, `data`, `ora`, `durata`, `costo`) "
+            $sql .= "INSERT INTO `$this->tab_abb_voce` (`nSIM`, `cod`, `tipo`, `direttrice`, `numeroChiamato`, `data_chiamata`, `ora`, `durata`, `costo`) "
                     . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', $campo_8 );";
 
         }
@@ -306,7 +306,7 @@ class ElaboratoreAbb        extends ElaboratoreOOP {
             $campo_1=(int)$this->array_4d_result[$n][2][$i][0];   //cod
             $campo_2=$this->array_4d_result[$n][2][$i][1];        //tipo
             $campo_3=$this->array_4d_result[$n][2][$i][2];        //apn
-            $campo_4="20".$this->array_4d_result[$n][2][$i][3];   //data
+            $campo_4="20".$this->array_4d_result[$n][2][$i][3];   //data_conn
             $campo_5=$this->array_4d_result[$n][2][$i][4];        //ora
             $campo_6=$this->array_4d_result[$n][2][$i][5];        //durata
             $campo_7=(int)$this->array_4d_result[$n][2][$i][6];   //byte
@@ -314,7 +314,7 @@ class ElaboratoreAbb        extends ElaboratoreOOP {
             $campo_9=$this->array_4d_result[$n][2][$i][8];        //bundle
 
             //sql per inserimento dati
-            $sql .= "INSERT INTO `$this->tab_abb_dati` (nSIM, cod, tipo, apn, data, ora, durata, byte, costo, bundle) "
+            $sql .= "INSERT INTO `$this->tab_abb_dati` (nSIM, cod, tipo, apn, data_conn, ora, durata, byte, costo, bundle) "
                     . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', $campo_7, $campo_8, '$campo_9' );";
 
 
@@ -437,7 +437,7 @@ class ElaboratoreRic        extends ElaboratoreOOP {
                 }
 
                 $campo_1=(int)$this->array_4d_result[$n][1][$i][0];   //cod
-                $campo_2="20".$this->array_4d_result[$n][1][$i][1];   //data
+                $campo_2="20".$this->array_4d_result[$n][1][$i][1];   //data_chiamata
                 $campo_3=$this->array_4d_result[$n][1][$i][2];        //ora
                 $campo_4=$this->array_4d_result[$n][1][$i][3];        //numero chiamato
                 $campo_5=$this->array_4d_result[$n][1][$i][4];        //durata
@@ -447,7 +447,7 @@ class ElaboratoreRic        extends ElaboratoreOOP {
 
 
                 //sql per inserimento dati voce              
-                $sql .= "INSERT INTO $this->tab_ric_voce (nSIM, cod, data, ora, numeroChiamato, durata, costo, direttrice, tipo) "
+                $sql .= "INSERT INTO $this->tab_ric_voce (nSIM, cod, data_chiamata, ora, numeroChiamato, durata, costo, direttrice, tipo) "
                         . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', $campo_6, '$campo_7', '$campo_8' );";
 
             }
@@ -466,7 +466,7 @@ class ElaboratoreRic        extends ElaboratoreOOP {
                 }
 
                 $campo_1=(int)$this->array_4d_result[$n][2][$i][0];   //cod
-                $campo_2="20".$this->array_4d_result[$n][2][$i][1];   //data
+                $campo_2="20".$this->array_4d_result[$n][2][$i][1];   //data_conn
                 $campo_3=$this->array_4d_result[$n][2][$i][2];        //durata
                 $campo_4=$this->array_4d_result[$n][2][$i][3];        //direttrice es. AZ DATI NAZIONALE
                 $campo_5=(int)$this->array_4d_result[$n][2][$i][4];   //byte
@@ -475,7 +475,7 @@ class ElaboratoreRic        extends ElaboratoreOOP {
                 $campo_8=$this->array_4d_result[$n][2][$i][7];        //APN
 
                 //sql per inserimento dati
-                $sql .= "INSERT INTO $this->tab_ric_dati (nSIM, cod, data, durata, direttrice, byte, costo, tipo, apn) "
+                $sql .= "INSERT INTO $this->tab_ric_dati (nSIM, cod, data_conn, durata, direttrice, byte, costo, tipo, apn) "
                         . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', $campo_5, $campo_6, '$campo_7', '$campo_8' );";
 
             }
@@ -575,12 +575,12 @@ class ElaboratoreRicRiep    extends ElaboratoreOOP {
                 $campo_4=$this->array_4d_result[$n][2][$i][3];          //durata
                 $campo_5=$this->array_4d_result[$n][2][$i][4];          //nonUsato
                 $campo_6=str_replace(",", ".",$this->array_4d_result[$n][2][$i][5]);  //costo
-                $campo_7=$this->data;                                   //data
+                $campo_7=$this->data;                                   //data_chiamata
   
 
 
                 //sql per inserimento dati voce              
-                $sql .= "INSERT INTO $this->tab_ric_riep (nSIM, cod, direttrice, numeroChiamate, durata, nonUsato, costo, data) "
+                $sql .= "INSERT INTO $this->tab_ric_riep (nSIM, cod, direttrice, numeroChiamate, durata, nonUsato, costo, data_chiamata) "
                         . "VALUES ( '$num' , $campo_1, '$campo_2', $campo_3, '$campo_4', '$campo_5', $campo_6, '$campo_7' );";
 
             }
@@ -606,7 +606,7 @@ class ElaboratoreRicRiep    extends ElaboratoreOOP {
 
 
 $obj = new ElaboratoreRic();
-//$obj->creaTabelle();
+$obj->creaTabelle();
 $obj->sql_ric();
 //$obj->var_dump_pre();
 

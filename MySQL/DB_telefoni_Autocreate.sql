@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `abb_dati` (
   `cod` int(11) NOT NULL,
   `tipo` varchar(50) NOT NULL,
   `apn` varchar(50) NOT NULL,
-  `data` date NOT NULL,
+  `data_conn` date NOT NULL,
   `ora` time NOT NULL,
   `durata` time NOT NULL,
   `byte` int(11) NOT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `abb_voce` (
   `tipo` varchar(50) NOT NULL,
   `direttrice` varchar(50) NOT NULL,
   `numeroChiamato` varchar(50) NOT NULL,
-  `data` date NOT NULL,
+  `data_chiamata` date NOT NULL,
   `ora` time NOT NULL,
   `durata` time NOT NULL,
   `costo` double NOT NULL,
@@ -52,10 +52,11 @@ CREATE TABLE IF NOT EXISTS `abb_voce` (
 CREATE TABLE IF NOT EXISTS `num_mobile` (
   `idMobile` int(11) NOT NULL AUTO_INCREMENT,
   `numeroMobile` varchar(50) NOT NULL DEFAULT '0',
-  `dataAttivazione` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `dataAttivazione` date DEFAULT NULL,
   `dataDisattivazione` date DEFAULT NULL,
+  `dataInserimento` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   KEY `Indice 1` (`idMobile`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=2121 DEFAULT CHARSET=latin1;
 
 -- L’esportazione dei dati non era selezionata.
 -- Dump della struttura di tabella telefonia.ric_dati
@@ -63,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `ric_dati` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nSIM` varchar(50) NOT NULL,
   `cod` int(11) NOT NULL,
-  `data` date NOT NULL,
+  `data_conn` date NOT NULL,
   `durata` time NOT NULL,
   `direttrice` varchar(50) NOT NULL,
   `byte` int(11) NOT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `ric_riep` (
   `durata` time NOT NULL,
   `nonUsato` varchar(50) NOT NULL,
   `costo` double NOT NULL,
-  `data` date NOT NULL,
+  `data_chiamata` date NOT NULL,
   KEY `Indice 1` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -94,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `ric_voce` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nSIM` varchar(50) NOT NULL,
   `cod` int(11) NOT NULL,
-  `data` date NOT NULL,
+  `data_chiamata` date NOT NULL,
   `ora` time NOT NULL,
   `numeroChiamato` varchar(50) NOT NULL,
   `durata` time NOT NULL,

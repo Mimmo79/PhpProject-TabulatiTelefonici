@@ -64,5 +64,30 @@ inserire un campo data come intero es. 20171011 è valido
 
 
 
+***********
+<?php
+function secondi($t){
+    $te=explode(":",$t);//tempo in formato h:m:s (è così?)
+    return $te[0]*360+$te[1]*60+$te[2];
+
+}
+//dati di connessione
+//leggi solo i record che non sono stati aggiornati precedentemente
+$query=mysql_query("SELECT * FROM tabella WHERE tempo_secondi!=0");
+if(mysql_num_rows($query)==0){
+    echo "non ci sono record da aggiornare";
+}else{
+    while($riga=mysql_fetch_array($query)){
+        $id=$riga['id'];
+        $sec=secondi($riga['tempo']);
+        $q=mysql_query("UPDATE tabella SET tempo_secondi=$sec WHERE id=$id");
+    }
+}
+//ecc...
+?>
+**********
+
+
+
 
 
