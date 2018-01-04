@@ -21,18 +21,20 @@
  */
 
 class ElaboratoreOOP {
-    
-    private $array_4d_result="";
-    private $data_array;
-    private $n_linee=0;
+    /**
+     *
+     * @array_4d_result contiene i dati estrapolati dal file divisi per SIM/tipo 
+     */
+    protected $array_4d_result="";
+    protected $data_array;
     
     /**
      *
      * path dei file
      */
-    protected $nome_file_ric = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat';
-    protected $nome_file_ric_riep = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\Riepilogo_Personali\201701888011111046R.dat';
-    protected $nome_file_abb = 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat';
+    public $nome_file_ric = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat';
+    public $nome_file_ric_riep = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\Riepilogo_Personali\201701888011111046R.dat';
+    public $nome_file_abb = 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat';
     
     /**
      *  parametri DB
@@ -183,37 +185,40 @@ class ElaboratoreOOP {
     }
     public      function var_dump_pre() {
         echo '<pre>';
-        var_dump($this);
+        var_dump($this->array_4d_result );
         echo '</pre>';
         return null;
     }
-    public      function leggiFile(){
+    public      function leggiFile($nome_file){
         //trasferisco il contenuto del file in un array
-        $telecom_file = file_get_contents($this->nome_file_abb);    //trasforma il file in una stringa 
+        $telecom_file = file_get_contents($nome_file);    //trasforma il file in una stringa 
         $linee  = explode("\n", $telecom_file);                     // array delle righe                       
         foreach($linee as $n_linea => $riga){               // scansione riga x riga   
             $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
             for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
-                $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
+                $this->data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
             }
         }
-        $n_linee=count($linee);
     }
           
 }
 
 class Elaboratore        extends ElaboratoreOOP {
+    
     protected $data;    
         
     public function __construct(){
-        $this->leggiFile();
+        $array_4d_result=null;
+        $data_array=null;
+        $data=null;
     }
     
     public function scansionatore($id_start, $id_stop, $id_voce, $id_dati){
   
-
-        $this->data=substr($this->data_array[0][3],-4)."01";      // ricavo la data
-        $n=0;                                               // indice SIM
+        $data_array= $this->data_array;         // array con i dati grezzi
+        $n_linee=count($this->data_array);
+        $this->data=substr($data_array[0][3],-4)."01";    // ricavo la data 201701 -> 170101
+        $nSIM=0;                                             
         $id_array_voce=0;
         $id_array_dati=0;
         
@@ -232,137 +237,53 @@ class Elaboratore        extends ElaboratoreOOP {
         
         
         
-        for ($x=0; $x<$this->n_linee-1; $x++) {                              // per ogni riga del "data_array" N.B. -1 perchl'ultima riga del file è vuota
-            if ($this->data_array[$x][0] == $id_start) {                          // identifico la linea d'inizio report, dove compare il numero della SIM
-                $super_data_array[$n][0][0][0] = trim($data_array[$x][1]);  // salvo il numero SIM
-
-            } elseif ($data_array[$x][0] == $id_voce) {                     // identifico la linea di traf. voce
-                for ($e=0; $e<$n_campi_voce; $e++) {                                    // trasferisco la riga voce
-                    $super_data_array[$n][1][$id_array_voce][$e] = trim($data_array[$x][$e]);
+        for ($x=0; $x<$n_linee-1; $x++) {                                       // per ogni riga del "data_array" N.B. -1 perchl'ultima riga del file è vuota
+            //echo "nSIM=".$nSIM." ".$data_array[$x][0]."+++";
+            if ($data_array[$x][0] == $id_start) {                              // identifico la linea d'inizio report, dove compare il numero della SIM
+                $super_data_array[$nSIM][0][0][0] = trim($data_array[$x][1]);   // salvo il numero SIM
+            
+            // traffico voce    
+            } elseif ($data_array[$x][0] == $id_voce) {                         // identifico la linea di traf. voce
+                for ($e=0; $e<$n_campi_voce; $e++) {                            // trasferisco la riga voce
+                    $super_data_array[$nSIM][1][$id_array_voce][$e] = trim($data_array[$x][$e]);
                 }
                 $id_array_voce++;
-                $super_data_array[$n][1][$id_array_voce][0]="***";          // carattere di fine
+                $super_data_array[$nSIM][1][$id_array_voce][0]="***";          // carattere di fine
 
+            // traffico dati
             } elseif ($data_array[$x][0] == $id_dati){                      // identifico la linea di traf. dati
                 for ($e=0; $e<$n_campi_dati; $e++) {                                    // trasferisco la riga dati
-                    $super_data_array[$n][2][$id_array_dati][$e] = trim($data_array[$x][$e]);
+                    $super_data_array[$nSIM][2][$id_array_dati][$e] = trim($data_array[$x][$e]);
                 }
                 $id_array_dati++;
-                $super_data_array[$n][2][$id_array_dati][0]="***";          // carattere di fine
+                $super_data_array[$nSIM][2][$id_array_dati][0]="***";          // carattere di fine
 
+            // fine report
             } elseif ($data_array[$x][0] == $id_stop){                      // identifico la linea di fine report              
-                if ($id_array_voce===0) {                                   // SIM senza traffico voce
+                
+                if ($id_array_voce==0) {                                    // SIM senza traffico voce
                     for ($v=0; $v<$n_campi_voce; $v++){
-                        $super_data_array[$n][1][0][0] = "0";
+                        $super_data_array[$nSIM][1][0][$v] = "0";
                     }
-                    if (id_start===04){
-                        $super_data_array[$n][1][0][4] = $this->data;
-                    } else if (id_start===60){
-                        $super_data_array[$n][1][0][1] = $this->data;
+                    if ($id_start==04){
+                        $super_data_array[$nSIM][1][0][4] = $this->data;
+                    } else if ($id_start==60){
+                        $super_data_array[$nSIM][1][0][1] = $this->data;
                     }
                 }    
                 
-                if ($id_array_dati===0) {                                    //SIM senza traffico dati
+                if ($id_array_dati==0) {                                    //SIM senza traffico dati
                     for ($v=0; $v<$n_campi_dati; $v++){
-                        $super_data_array[$n][1][0][0] = "0";
+                        $super_data_array[$nSIM][2][0][$v] = "0";
                     }
-                    if (id_start===04){
-                        $super_data_array[$n][1][0][3] = $this->data;
-                    } else if (id_start===60){
-                        $super_data_array[$n][1][0][1] = $this->data;
+                    if ($id_start==04){
+                        $super_data_array[$nSIM][2][0][3] = $this->data;
+                    } else if ($id_start==60){
+                        $super_data_array[$nSIM][2][0][1] = $this->data;
                     }
                 } 
-                $n++;
-                $id_array_voce=0;
-                $id_array_dati=0;
-            }
-        }     
-        
-        $this->array_4d_result=super_data_array;
-     
-        //super_data_array[n][d][y][x]
-        //----------------------------
-        //
-        //[n=0][d=0][y=0][x=0] n° SIM 1
-        //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-        //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
-        //
-        //[n=1][d=0][y=0][x=0] n° SIM 2
-        //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-        //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-        //[n=1][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne       
-        
-    }
-    
-    
-    
-}
-
-
-class ElaboratoreAbb        extends ElaboratoreOOP {
-    
-    protected $data;    
-    
-    
-    public function __construct(){
-        $this->scansionatore_abb();
-    }
-
-    public function scansionatore_abb($id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06){
-    //fonia 05	AZIENDALE SMS              	Numero Altro Operatore      	3385877xxx        	170102	11:47:21	00:00:00	00000000,0280	    
-    //dati  06	AZIENDALE DATI             	I-Box                       	170127	11:35:01	00:14:11	000000003	00000000,0000	Interc 2014 2GB
-        $telecom_file = file_get_contents($this->nome_file_abb);    //trasforma il file in una stringa 
-        $linee  = explode("\n", $telecom_file);                     // array delle righe                       
-        foreach($linee as $n_linea => $riga){               // scansione riga x riga   
-            $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
-            for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
-                $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
-            }
-        }   
-
-        $this->data=substr($data_array[0][3],-4)."01";      // ricavo la data
-        $n=0;                                               // indice SIM
-        $id_array_voce=0;
-        $id_array_dati=0;
-        for ($x=0; $x<count($linee)-1; $x++) {                              // per ogni riga del "data_array" N.B. -1 perchl'ultima riga del file è vuota
-            if ($data_array[$x][0] == $id_start) {                          // identifico la linea d'inizio report, dove compare il numero della SIM
-                $super_data_array[$n][0][0][0] = trim($data_array[$x][1]);  // salvo il numero SIM
-            } elseif ($data_array[$x][0] == $id_voce) {                     // identifico la linea di traf. voce
-                for ($e=0; $e<8; $e++) {                                    // trasferisco la riga voce
-                    $super_data_array[$n][1][$id_array_voce][$e] = trim($data_array[$x][$e]);
-                }
-                $id_array_voce++;
-                $super_data_array[$n][1][$id_array_voce][0]="***";          // carattere di fine
-            } elseif ($data_array[$x][0] == $id_dati){                      // identifico la linea di traf. dati
-                for ($e=0; $e<9; $e++) {                                    // trasferisco la riga dati
-                    $super_data_array[$n][2][$id_array_dati][$e] = trim($data_array[$x][$e]);
-                }
-                $id_array_dati++;
-                $super_data_array[$n][2][$id_array_dati][0]="***";          // carattere di fine
-            } elseif ($data_array[$x][0] == $id_stop){                      // identifico la linea di fine report              
-                if ($id_array_voce===0) {                                   // SIM senza traffico voce
-                    $super_data_array[$n][1][0][0] = "0";
-                    $super_data_array[$n][1][0][1] = "0";
-                    $super_data_array[$n][1][0][2] = "0";
-                    $super_data_array[$n][1][0][3] = "0";
-                    $super_data_array[$n][1][0][4] = $this->data;
-                    $super_data_array[$n][1][0][5] = "0";
-                    $super_data_array[$n][1][0][6] = "0";
-                    $super_data_array[$n][1][0][7] = "0";                   
-                }    
-                if ($id_array_dati===0) {                                    //SIM senza traffico dati
-                    $super_data_array[$n][2][0][0] = "0";
-                    $super_data_array[$n][2][0][1] = "0";
-                    $super_data_array[$n][2][0][2] = "0";
-                    $super_data_array[$n][2][0][3] = $this->data;
-                    $super_data_array[$n][2][0][4] = "0";
-                    $super_data_array[$n][2][0][5] = "0";
-                    $super_data_array[$n][2][0][6] = "0";
-                    $super_data_array[$n][2][0][7] = "0";
-                    $super_data_array[$n][2][0][8] = "0";
-                } 
-                $n++;
+                 
+                $nSIM++;
                 $id_array_voce=0;
                 $id_array_dati=0;
             }
@@ -383,182 +304,8 @@ class ElaboratoreAbb        extends ElaboratoreOOP {
         //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
         //[n=1][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne       
         
-        }
-        
-    public function sql_abb() {
-    //fonia 05	AZIENDALE SMS              	Numero Altro Operatore      	3385877xxx        	170102	11:47:21	00:00:00	00000000,0280	    
-    // VOCE           
-    $sql ="";
-    for ($n=0; $n<count($this->array_4d_result); $n++) {    
-        $num=$this->array_4d_result[$n][0][0][0];    //numero SIM, trim elimina gli spazi es. (float)trim
-        for ($i=0; $i<100000; $i++){
-            if (!isset($this->array_4d_result[$n][1][$i][0])){     //se non ci sono dati esci
-                break;
-            }
-            if ($this->array_4d_result[$n][1][$i][0]==="***"){
-                break;
-            }
-
-            $campo_1=(int)$this->array_4d_result[$n][1][$i][0];   //cod
-            $campo_2=$this->array_4d_result[$n][1][$i][1];        //tipo
-            $campo_3=str_replace("'", "",$this->array_4d_result[$n][1][$i][2]);        //direttrice
-            $campo_4=$this->array_4d_result[$n][1][$i][3];        //numero chiamato
-            $campo_5="20".$this->array_4d_result[$n][1][$i][4];   //data_chiamata
-            $campo_6=$this->array_4d_result[$n][1][$i][5];        //ora
-            $campo_7=$this->array_4d_result[$n][1][$i][6];        //durata
-            $campo_8=str_replace(",", ".",$this->array_4d_result[$n][1][$i][7]);        //costo
-
-
-            //sql per inserimento dati voce
-            $sql .= "INSERT INTO `$this->tab_abb_voce` (`nSIM`, `cod`, `tipo`, `direttrice`, `numeroChiamato`, `data_chiamata`, `ora`, `durata`, `costo`) "
-                    . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', '$campo_7', $campo_8 );";
-
-        }
-
-    }
-
-    //dati  06	AZIENDALE DATI             	I-Box                       	170127	11:35:01	00:14:11	000000003	00000000,0000	Interc 2014 2GB
-    // DATI
-    for ($n=0; $n<count($this->array_4d_result); $n++) {    
-        $num=$this->array_4d_result[$n][0][0][0];                 //numero SIM, trim elimina gli spazi es. (float)trim
-        for ($i=0; $i<100000; $i++){
-            if (!isset($this->array_4d_result[$n][2][$i][0]))     //se non ci sono dati esci
-                break;
-            if ($this->array_4d_result[$n][2][$i][0]==="***"){    //fine dati
-                break;
-            }
-
-            $campo_1=(int)$this->array_4d_result[$n][2][$i][0];   //cod
-            $campo_2=$this->array_4d_result[$n][2][$i][1];        //tipo
-            $campo_3=$this->array_4d_result[$n][2][$i][2];        //apn
-            $campo_4="20".$this->array_4d_result[$n][2][$i][3];   //data_conn
-            $campo_5=$this->array_4d_result[$n][2][$i][4];        //ora
-            $campo_6=$this->array_4d_result[$n][2][$i][5];        //durata
-            $campo_7=(int)$this->array_4d_result[$n][2][$i][6];   //byte
-            $campo_8=str_replace(",", ".",$this->array_4d_result[$n][2][$i][7]);        //costo
-            $campo_9=$this->array_4d_result[$n][2][$i][8];        //bundle
-
-            //sql per inserimento dati
-            $sql .= "INSERT INTO `$this->tab_abb_dati` (nSIM, cod, tipo, apn, data_conn, ora, durata, byte, costo, bundle) "
-                    . "VALUES ( '$num' , $campo_1, '$campo_2', '$campo_3', '$campo_4', '$campo_5', '$campo_6', $campo_7, $campo_8, '$campo_9' );";
-
-
-        }
-
-    }
-
-    $istruzioni_sql = explode(';', $sql);
-    $comando_sql="";                                            // inizializzo la stringa di comando
-    foreach($istruzioni_sql as $n_istruzione => $istruzione){
-        $comando_sql .= $istruzione . ";";                      // aggiungo il ; al termine di ogni istruzione
-        if (!($n_istruzione % 1000)and !($n_istruzione===0) or  // raggruppo le istruzioni
-                $n_istruzione===count($istruzioni_sql)-1 ){     // sono all'ultima istruzione                       
-            $this->mysql($comando_sql);                     
-            $comando_sql="";
-        }
-    }
-
-}   
-    
-
-
-    
-
-
-
-
-
-
-}
-
-class ElaboratoreRic        extends ElaboratoreOOP {
-    
-    protected $data;
-    
-    
-    public function __construct(){
-        $this->scansionatore_ric();
     }
     
-    public function scansionatore_ric($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63){
-        
-        //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale
-        //63	170113	17:03:18	AZ DATI NAZIONALE                                 	00020971813	00000000,0000	Aziendale	APN IBOX
-        $telecom_file = file_get_contents($this->nome_file_ric);
-        $linee  = explode("\n", $telecom_file);             // array delle righe                       
-        foreach($linee as $n_linea => $riga){               // scansione riga x riga   
-            $elem_riga = preg_split("/[\t]/", "$riga");     // array degli elementi di ogni riga es. "/[\s,]+/"
-            for ($x=0; $x<count($elem_riga); $x++) {        // creo un array bidimensionale con i dati
-                $data_array[$n_linea][$x]=$elem_riga[$x];   // "data_array" matrice dei dati
-            }
-        //echo $n_linea . " " . $elem_riga[0] . '<br />' ;  //linea debug
-        }   
-
-        $this->data=substr($data_array[0][3],-4)."01";
-        $n=0;                                                               // indice SIM
-        $id_array_voce=0;
-        $id_array_dati=0;
-        for ($x=0; $x<count($linee)-1; $x++) {                              // per ogni riga di "data_array" N.B. -1 perchl'ultima riga del file è vuota
-
-            if ($data_array[$x][0] == $id_start){                           // identifico la linea d'inizio report
-                $super_data_array[$n][0][0][0] = trim($data_array[$x][1]);  // salvo il numero SIM  
-            } elseif ($data_array[$x][0] == $id_voce){                      // identifico la linea di traf. voce
-                for ($e=0; $e<8; $e++) {                                    // trasferisco ogni elemento della riga
-                    $super_data_array[$n][1][$id_array_voce][$e] = trim($data_array[$x][$e]);
-                }
-                $id_array_voce++;                                           // incremento il puntatore nell'array di destinazione
-                $super_data_array[$n][1][$id_array_voce][0]="***";          // inserisco identificativo di chiusura
-            } elseif ($data_array[$x][0] == $id_dati){                      // identifico la linea di traf. dati
-                for ($e=0; $e<8; $e++) {                                    // trasferisco ogni elemento della riga
-                    $super_data_array[$n-1][2][$id_array_dati][$e] = trim($data_array[$x][$e]);   //-1 necessario perchè id_stop fra voce e dati
-                }
-                $id_array_dati++;                                           // incremento il puntatore nell'array di destinazione
-                $super_data_array[$n-1][2][$id_array_dati][0]="***";        // inserisco identificativo di chiusura
-            } elseif ($data_array[$x][0] == $id_stop){                    // identifico la linea di fine report 
-                if ($id_array_voce===0) {                                    //SIM senza traffico voce
-                    $super_data_array[$n][1][0][0] = "0";
-                    $super_data_array[$n][1][0][1] = $this->data;
-                    $super_data_array[$n][1][0][2] = "0";
-                    $super_data_array[$n][1][0][3] = "0";
-                    $super_data_array[$n][1][0][4] = "0";
-                    $super_data_array[$n][1][0][5] = "0";
-                    $super_data_array[$n][1][0][6] = "0";
-                    $super_data_array[$n][1][0][7] = "0";                   
-                }    
-                if ($id_array_dati===0) {                                    //SIM senza traffico dati
-                    $super_data_array[$n][2][0][0] = "0";
-                    $super_data_array[$n][2][0][1] = $this->data;
-                    $super_data_array[$n][2][0][2] = "0";
-                    $super_data_array[$n][2][0][3] = "0";
-                    $super_data_array[$n][2][0][4] = "0";
-                    $super_data_array[$n][2][0][5] = "0";
-                    $super_data_array[$n][2][0][6] = "0";
-                    $super_data_array[$n][2][0][7] = "0";
-                    $super_data_array[$n][2][0][8] = "0";
-                } 
-                $n++;
-                $id_array_voce=0;
-                $id_array_dati=0;
-            }
-        }     
-
-        $this->array_4d_result=$super_data_array;
-
-        //super_data_array[n][d][y][x]
-        //----------------------------
-        //
-        //[n=0][d=0][y=0][x=0] n° SIM 1
-        //[n=0][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-        //[n=0][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
-        //
-        //[n=1][d=0][y=0][x=0] n° SIM 2
-        //[n=1][d=1][y][x] array bidimensionale voce Y=righe x=colonne
-        //[n=1][d=2][y][x] array bidimensionale dati Y=righe x=colonne
-        //[n=0][d=3][y][x] array bidimensionale riepilogo personali Y=righe x=colonne
-        
-    }
-        
     public function sql_ric() { 
         //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale            
         // VOCE
@@ -628,7 +375,7 @@ class ElaboratoreRic        extends ElaboratoreOOP {
             }
         }
 
-    }
+    }    
 }
 
 class ElaboratoreRicRiep    extends ElaboratoreOOP {
@@ -739,17 +486,13 @@ class ElaboratoreRicRiep    extends ElaboratoreOOP {
 
 
 $obj = new Elaboratore();
+$obj->leggiFile($obj->nome_file_ric);
+
 //ABB $id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06
 //RIC $id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63
-$obj->scansionatore(04,37,05,06);
+$obj->scansionatore(60,72,61,63);
+$obj->var_dump_pre();
 
-
-/*
-$obj = new Elaboratore();
-$obj->sql_ric();
-//$obj->var_dump_pre();
-
-*/
  ?>
     </body>
 </html>
