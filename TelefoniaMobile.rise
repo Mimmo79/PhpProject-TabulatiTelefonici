@@ -5893,13 +5893,149 @@
       <rise:entityName>NumMobile</rise:entityName>
       <rise:newEntityName>Num_Mobile</rise:newEntityName>
     </rise:renameEntity>
+    <rise:renameEntity>
+      <rise:sequenceNumber>445</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:05:39</rise:timeStamp>
+      <rise:entityName>Marca</rise:entityName>
+      <rise:newEntityName>mobileMarca</rise:newEntityName>
+    </rise:renameEntity>
+    <rise:renameEntity>
+      <rise:sequenceNumber>446</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:06:34</rise:timeStamp>
+      <rise:entityName>mobileMarca</rise:entityName>
+      <rise:newEntityName>mobile_marche</rise:newEntityName>
+    </rise:renameEntity>
+    <rise:renameEntity>
+      <rise:sequenceNumber>447</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:08:31</rise:timeStamp>
+      <rise:entityName>Modello</rise:entityName>
+      <rise:newEntityName>mobile_modelli</rise:newEntityName>
+    </rise:renameEntity>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>448</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:08:51</rise:timeStamp>
+      <rise:entityName>mobile_marche</rise:entityName>
+      <rise:attributeName>idMarca</rise:attributeName>
+      <rise:newAttributeName>IDmarca</rise:newAttributeName>
+    </rise:renameAttribute>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>449</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:08:56</rise:timeStamp>
+      <rise:entityName>mobile_marche</rise:entityName>
+      <rise:attributeName>marca</rise:attributeName>
+      <rise:newAttributeName>Marca</rise:newAttributeName>
+    </rise:renameAttribute>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>450</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:09:20</rise:timeStamp>
+      <rise:entityName>mobile_modelli</rise:entityName>
+      <rise:attributeName>idModello</rise:attributeName>
+      <rise:newAttributeName>IDModello</rise:newAttributeName>
+    </rise:renameAttribute>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>451</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:10:02</rise:timeStamp>
+      <rise:entityName>mobile_modelli</rise:entityName>
+      <rise:attributeName>modello</rise:attributeName>
+      <rise:newAttributeName>FK-IDmarca</rise:newAttributeName>
+    </rise:renameAttribute>
+    <rise:editAttribute>
+      <rise:sequenceNumber>452</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:11:17</rise:timeStamp>
+      <rise:entity>
+        <rise:name>mobile_modelli</rise:name>
+        <rise:attribute>
+          <rise:name>FK-IDmarca</rise:name>
+          <rise:dataTypeAlias />
+          <rise:dataType>int</rise:dataType>
+          <rise:dataSize>50</rise:dataSize>
+          <rise:mustBeUnique>True</rise:mustBeUnique>
+          <rise:mustExist>True</rise:mustExist>
+        </rise:attribute>
+        <rise:maxID>0</rise:maxID>
+      </rise:entity>
+    </rise:editAttribute>
+    <rise:editAttribute>
+      <rise:sequenceNumber>453</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:11:35</rise:timeStamp>
+      <rise:entity>
+        <rise:name>mobile_modelli</rise:name>
+        <rise:attribute>
+          <rise:name>FK-IDmarca</rise:name>
+          <rise:dataTypeAlias />
+          <rise:dataType>int</rise:dataType>
+          <rise:mustBeUnique>False</rise:mustBeUnique>
+          <rise:mustExist>True</rise:mustExist>
+        </rise:attribute>
+        <rise:maxID>0</rise:maxID>
+      </rise:entity>
+    </rise:editAttribute>
+    <rise:editAttribute>
+      <rise:sequenceNumber>454</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:11:45</rise:timeStamp>
+      <rise:entity>
+        <rise:name>mobile_modelli</rise:name>
+        <rise:attribute>
+          <rise:name>codice modello</rise:name>
+          <rise:dataTypeAlias />
+          <rise:dataType>string</rise:dataType>
+          <rise:dataSize>50</rise:dataSize>
+          <rise:mustBeUnique>False</rise:mustBeUnique>
+          <rise:mustExist>True</rise:mustExist>
+        </rise:attribute>
+        <rise:maxID>0</rise:maxID>
+      </rise:entity>
+    </rise:editAttribute>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>455</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:11:45</rise:timeStamp>
+      <rise:entityName>mobile_modelli</rise:entityName>
+      <rise:attributeName>codice modello</rise:attributeName>
+      <rise:newAttributeName>Modello</rise:newAttributeName>
+    </rise:renameAttribute>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>456</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:12:46</rise:timeStamp>
+      <rise:entityName>mobile_modelli</rise:entityName>
+      <rise:attributeName>categoria</rise:attributeName>
+      <rise:newAttributeName>Categoria</rise:newAttributeName>
+    </rise:renameAttribute>
+    <rise:editAttribute>
+      <rise:sequenceNumber>457</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:13:07</rise:timeStamp>
+      <rise:entity>
+        <rise:name>mobile_modelli</rise:name>
+        <rise:attribute>
+          <rise:name>Categoria</rise:name>
+          <rise:dataTypeAlias />
+          <rise:dataType>string</rise:dataType>
+          <rise:dataSize>50</rise:dataSize>
+          <rise:mustBeUnique>False</rise:mustBeUnique>
+          <rise:mustExist>True</rise:mustExist>
+        </rise:attribute>
+        <rise:maxID>0</rise:maxID>
+      </rise:entity>
+    </rise:editAttribute>
+    <rise:renameEntity>
+      <rise:sequenceNumber>458</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:15:32</rise:timeStamp>
+      <rise:entityName>Terminale</rise:entityName>
+      <rise:newEntityName>mobile_terminale</rise:newEntityName>
+    </rise:renameEntity>
+    <rise:renameAttribute>
+      <rise:sequenceNumber>459</rise:sequenceNumber>
+      <rise:timeStamp>2018-01-12T10:15:54</rise:timeStamp>
+      <rise:entityName>mobile_terminale</rise:entityName>
+      <rise:attributeName>id</rise:attributeName>
+      <rise:newAttributeName>IDterminale</rise:newAttributeName>
+    </rise:renameAttribute>
   </rise:evolution>
   <rise:publish />
   <rise:presentation>
     <rise:diagram>
       <rise:name>Drawing</rise:name>
       <rise:drawEntity>
-        <rise:entityName>Terminale</rise:entityName>
+        <rise:entityName>mobile_terminale</rise:entityName>
         <rise:showAttributeDetails>False</rise:showAttributeDetails>
         <rise:showIndexes>False</rise:showIndexes>
         <rise:boundingBox>
@@ -5914,12 +6050,12 @@
         </rise:color>
       </rise:drawEntity>
       <rise:drawEntity>
-        <rise:entityName>Modello</rise:entityName>
+        <rise:entityName>mobile_modelli</rise:entityName>
         <rise:showAttributeDetails>False</rise:showAttributeDetails>
         <rise:showIndexes>False</rise:showIndexes>
         <rise:boundingBox>
           <rise:x>164</rise:x>
-          <rise:y>303</rise:y>
+          <rise:y>302</rise:y>
           <rise:sizeX>103</rise:sizeX>
           <rise:sizeY>95</rise:sizeY>
         </rise:boundingBox>
@@ -5929,13 +6065,13 @@
         </rise:color>
       </rise:drawEntity>
       <rise:drawEntity>
-        <rise:entityName>Marca</rise:entityName>
+        <rise:entityName>mobile_marche</rise:entityName>
         <rise:showAttributeDetails>False</rise:showAttributeDetails>
         <rise:showIndexes>False</rise:showIndexes>
         <rise:boundingBox>
-          <rise:x>181</rise:x>
-          <rise:y>185</rise:y>
-          <rise:sizeX>69</rise:sizeX>
+          <rise:x>162</rise:x>
+          <rise:y>184</rise:y>
+          <rise:sizeX>106</rise:sizeX>
           <rise:sizeY>70</rise:sizeY>
         </rise:boundingBox>
         <rise:color>
@@ -6184,7 +6320,7 @@
         <rise:textRef>959b438d-92c2-46d3-a1e1-596840a7d8e2</rise:textRef>
         <rise:display>TitleAndText</rise:display>
         <rise:boundingBox>
-          <rise:x>17</rise:x>
+          <rise:x>18</rise:x>
           <rise:y>22</rise:y>
           <rise:sizeX>160</rise:sizeX>
           <rise:sizeY>83</rise:sizeY>
@@ -6353,7 +6489,7 @@ Rubato</rise:text>
     <rise:text>
       <rise:textID>959b438d-92c2-46d3-a1e1-596840a7d8e2</rise:textID>
       <rise:title>Diagramma concettuale del sistema di gestione Telefonia Mobile</rise:title>
-      <rise:text>Ver. 0.1
+      <rise:text>Ver. 0.2
 </rise:text>
     </rise:text>
     <rise:text>
