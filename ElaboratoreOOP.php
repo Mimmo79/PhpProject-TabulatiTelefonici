@@ -32,7 +32,7 @@ class ElaboratoreOOP {
      *
      * path dei file
      */
-    public $nome_file_ric = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\201701888011111046A.dat';
+    public $nome_file_ric = 'C:\Users\senma\Desktop\File Telecom\mobile\Ricaricabile\201711888011111046A.dat';
     public $nome_file_ric_riep = 'C:\Users\senma\Desktop\File Telecom\Ricaricabile\Riepilogo_Personali\201701888011111046R.dat';
     public $nome_file_abb = 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat';
     
@@ -223,10 +223,10 @@ class Elaboratore        extends ElaboratoreOOP {
         $id_array_dati=0;
         
         // imposto le caratteristiche del file in base al codice di inizio
-        if ($id_start==04){
+        if ($id_start==04){         //abb
             $n_campi_voce=8;
             $n_campi_dati=9;
-        } else if ($id_start==60) {
+        } else if ($id_start==60) { //ric
             $n_campi_voce=8;
             $n_campi_dati=8;
             
@@ -310,7 +310,9 @@ class Elaboratore        extends ElaboratoreOOP {
         //61	170101	00:05:49	3355224xxx        	00:00:00	00000000,0000	AZ SMS ORIGINATO                                  	Aziendale            
         // VOCE
         $sql ="";
-        for ($n=0; $n<count($this->array_4d_result); $n++) {    
+        echo count($this->array_4d_result) . " <br>";
+      
+        for ($n=0; $n<count($this->array_4d_result)-1; $n++) {
             $num=$this->array_4d_result[$n][0][0][0];    //numero SIM, trim elimina gli spazi es. (float)trim
             for ($i=0; $i<100000; $i++){
                 if ($this->array_4d_result[$n][1][$i][0]==="***"){
@@ -491,7 +493,8 @@ $obj->leggiFile($obj->nome_file_ric);
 //ABB $id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06
 //RIC $id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63
 $obj->scansionatore(60,72,61,63);
-$obj->var_dump_pre();
+$obj->sql_ric();
+//$obj->var_dump_pre();
 
  ?>
     </body>
