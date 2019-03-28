@@ -32,7 +32,7 @@
          *
          * path dei file
          */
-        public $nome_file_ric = 'C:\Users\senma\Desktop\File Telecom\mobile\Ricaricabile\201711888011111046A.dat';
+        public $nome_file_ric = 'K:\U_Telematica\TIM\TIM TABULATI CELLULARI\2018_12_ok\Ricaricabile\201812888011111046A.dat';
         public $nome_file_ric_riep = 'K:\U_Telematica\TIM\TIM TABULATI CELLULARI\ARCHIVIO TIM ANNO 2016\2016_09\Ricaricabile\Riepilogativo x personali\201609888011111046R.dat';
         public $nome_file_abb = 'C:\Users\senma\Desktop\File Telecom\Abbonamento\201701888011111046AF.dat';
 
@@ -339,7 +339,7 @@
 
             //63	170113	17:03:18	AZ DATI NAZIONALE                                 	00020971813	00000000,0000	Aziendale	APN IBOX
             // DATI
-            for ($n=0; $n<count($this->array_4d_result); $n++) {    
+            for ($n=0; $n<count($this->array_4d_result)-1; $n++) {    
                 $num=$this->array_4d_result[$n][0][0][0];                 //numero SIM, trim elimina gli spazi es. (float)trim
                 for ($i=0; $i<100000; $i++){
                     if (!isset($this->array_4d_result[$n][2][$i][0]))     //se non ci sono dati esci
@@ -368,10 +368,11 @@
             $istruzioni_sql = explode(';', $sql);                       // creo un array con le istruzioni sql
             $comando_sql="";                                            // inizializzo la stringa di comando
             foreach($istruzioni_sql as $n_istruzione => $istruzione){ 
-                //echo $istruzione . " <br>";
+                // echo $istruzione . " <br>";
                 $comando_sql .= $istruzione . ";";                      // aggiungo il ; al termine di ogni istruzione
                 if (!($n_istruzione % 1000)and !($n_istruzione===0) or  // raggruppo le istruzioni
                         $n_istruzione===count($istruzioni_sql)-1 ){     // sono all'ultima istruzione                       
+                    // echo $comando_sql;
                     $this->mysql($comando_sql);                     
                     $comando_sql="";
                 }
@@ -487,17 +488,29 @@
 
     }
 
-
+    /*
     $obj = new ElaboratoreRicRiep();
     $obj->leggiFile($obj->nome_file_ric_riep);
-
     //ABB $id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06
     //RIC $id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63
     $obj->scansionatore_ric_riep();
     $obj->sql_ric_riep();
     //$obj->var_dump_pre();
+    */
+
+    $obj = new Elaboratore();
+    $obj->leggiFile($obj->nome_file_ric);
+    // ABB $id_start = 04, $id_stop = 37, $id_voce = 05, $id_dati = 06
+    // RIC $id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63
+    $obj->scansionatore($id_start = 60, $id_stop = 72, $id_voce = 61, $id_dati = 63);
+    $obj->sql_ric();
+    //$obj->var_dump_pre();
+    
+    
     ?>
 
+    
+        
 
     <p> Done </p>
 
