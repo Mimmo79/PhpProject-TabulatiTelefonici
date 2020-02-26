@@ -21,12 +21,12 @@
      */
 
     class ElaboratoreOOP {
-        /**
-         *
-         * @array_4d_result contiene i dati estrapolati dal file divisi per SIM/tipo 
-         */
-        protected $array_4d_result="";
+        
+        // @data_array contiene i dati estrapolati dal file NON FORMATTATI
         protected $data_array;
+        // @array_4d_result contiene i dati estrapolati dal file FORMATTATI 
+        protected $array_4d_result="";
+
 
         /**
          *
@@ -58,10 +58,11 @@
         protected $tab_abb_voce = "mobile_abb_voce";
         protected $tab_abb_dati = "mobile_abb_dati";
 
-
+        // ritorna i dati 4d
         public      function getProperty(){
             return $this->array_4d_result;
         }
+        
         protected   function mysql($sql){
             $i=0;
             $conn = mysqli_connect($this->servername, $this->username, $this->password, $this->dbname);
@@ -88,7 +89,9 @@
 
 
             mysqli_close($conn);
-        }   
+        } 
+        
+        //crea le tabelle
         public      function creaTabelle(){
 
     //        $mysqli = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
@@ -183,12 +186,16 @@
         $this->mysql($sql);
 
         }
+     
+        // visualizza i dati estrapolati
         public      function var_dump_pre() {
             echo '<pre>';
             var_dump($this->array_4d_result );
             echo '</pre>';
             return null;
         }
+        
+        //legge il file
         public      function leggiFile($nome_file){
             //trasferisco il contenuto del file in un array
             $telecom_file = file_get_contents($nome_file);    //trasforma il file in una stringa 
@@ -203,7 +210,7 @@
 
     }
 
-    class Elaboratore        extends ElaboratoreOOP {
+    class Elaboratore   extends ElaboratoreOOP {
 
         protected $data;    
 
@@ -213,6 +220,8 @@
             $data=null;
         }
 
+        // formatta l'array
+        // viene usato per tutti i file analitici di tutte le SIM 
         public function scansionatore($id_start, $id_stop, $id_voce, $id_dati){
 
             $data_array= $this->data_array;         // array con i dati grezzi
@@ -236,7 +245,7 @@
             }
 
 
-
+            // formatto i dati da $data_array -> $array_4d_result
             for ($x=0; $x<$n_linee-1; $x++) {                                       // per ogni riga del "data_array" N.B. -1 perchl'ultima riga del file è vuota
                 //echo "nSIM=".$nSIM." ".$data_array[$x][0]."+++";
                 if ($data_array[$x][0] == $id_start) {                              // identifico la linea d'inizio report, dove compare il numero della SIM
